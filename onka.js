@@ -1,86 +1,64 @@
-// resemble $ of Jquery
-function $(identifier){
+/*
+# log(x,mode,sep)
+this function serves 2 purpose
+1) shorthand of console.log
+2) shunt console.log to HTML object like <p> <div>
+## global variable
+### GLOBAL_stdout
+should refer to DOB object or left undefined
+### GLOBAL_stdout_mode
+- set = reset text
+- append = add the message to the end
+- stack = add the message upfront
+### GLOBAL_stdout_sep
+a characters to intervene between messages when mode is append or stack
+*/
+var GLOBAL_stdout = undefined; // should be a DOM element with innerHTML
+var GLOBAL_stdout_mode = "append";
+var GLOBAL_stdout_sep = "<br>";
+log = function(x="random alert",mode=GLOBAL_stdout_mode,sep=GLOBAL_stdout_sep){
+  if(GLOBAL_stdout==undefined ||
+    ! ("innerHTML" in GLOBAL_stdout) ||
+    !["set","append","stack"].includes(mode))console.log(x);
+  else if (mode == "set") GLOBAL_stdout.innerHTML = x;
+  else if (mode == "stack") GLOBAL_stdout.innerHTML = x + sep + GLOBAL_stdout.innerHTML;
+  else if (mode == "append") GLOBAL_stdout.innerHTML += sep + x;
+}
+
+/*
+# getVarName
+return the variable name
+to use this function, always wrap the variable in {}
+for example: getVarName({x}) --> should return x
+*/
+getVarName = function(V){return Object.keys(V)[0]}
+
+/*
+# isNA(a)
+the function check if given variable is NaN, null, undefined
+additional parameter NA_text is declared to include string recorded NA type value
+could be edited to include your own missing label
+# ifNA(a)
+a wrapper of isNA to replace NA with specified value
+*/
+
+isNA =function(a,NA_text=["null","undefined","NaN","NA"]){return [null,undefined,NaN].includes(a) || NA_text.includes(a)}
+ifNA = function(a,nil=""){return isNA(a)? nil : a}
+
+/*
+# $(idnetifier)
+this is a shorthand for querySelectorAll
+if the identifier is an id (beginning with #) the function returns single Object
+otherwise return an array of objects
+*/
+$ = function(identifier){
     let dollar = document.querySelectorAll(identifier);
-    if(dollar.length==0){alert(identifier+" not found!");return false;}
-    if()return dollar[0];
+    if(dollar.length==0) dollar = document.querySelectorAll("#"+identifier);
+    if(dollar.length==0){log(identifier+" not found!");return [];}
+    if(identifier[0]=="#")return dollar[0];
     return [...dollar];
 }
 
-// get table representation
-function T(TableId){
-    let theT = document.getElementById(TableId);
-    if(theT.tagName!='TABLE'){alert(TableId+" is not a TABLE!");return false;}
-    let TArray = [];
-    for(let r = 0; r<theT.rows.length;r++){
-    	TArray[r]=[];
-    	for(let c=0; c<theT.rows[r].cells.length;c++){
-    		//console.log(r,c);
-    		TArray[r].push(theT.rows[r].cells[c]);
-    	}
-    }
-    return TArray;
-}
-
-function decode(code,keyArr,err='N/A'){
-	if(keyArr[code])return keyArr[code];
-	Error(code+' not found!');
-	return err;
-}
-
-function arraySort(arr,header=false,sortby=0,mode=1){
-    console.log('Array sorting: ',arr)
-    if(header){
-        let temp = arr.slice(0,1)
-        arr = arraySort(arr.slice(1,arr.length),header=false,sortby,mode);
-        return temp.concat(arr);
-    }
-    if(!Array.isArray(sortby))sortby = [sortby];
-    if(!Array.isArray(mode))mode = [mode];
-    if(mode.length!=sortby.length){
-        Error("Length of sorting not equal");
-        return arr;
-    }
-
-    for(let i=0;i<sortby.length;i++){
-        arr.sort(function(a,b){
-            let A = a[sortby[i]].toLowerCase();
-            let B = b[sortby[i]].toLowerCase();
-
-            if(A<B) return mode[i];
-            if(A>B) return -mode[i];
-            return 0;
-        })
-    }
-    console.log(arr)
-    return arr;
-}
-
-function tableBuilder(arr,classname='',selected=0){
-    let htmlTxt = '';
-    if(isNestedObj(arr))
-        arr=obj2nested(arr);
-    for(let r = 0;r<arr.length;r++){
-        htmlTxt+='<tr>';
-        for(let c=0;c<Math.min(selected.length,arr[r].length);c++){
-            htmlTxt+='<td>';
-            htmlTxt+=vNA(arr[r][selected[c]],"-");
-            htmlTxt+='</td>';
-        }
-        htmlTxt+='</tr>';
-    }
-
-    return htmlTxt;
-}
-
-function arrTranspose(arr){
-    let newarr =[];
-    for(let i=0;i<arr[0].length;i++){
-        newarr[i]=[];
-        for(let j=0;j<arr.length;j++)
-            newarr[i].push(arr[j][i])
-    }
-    return newarr;
-}
 
 function getNormalDate(dated){
     dated = dated.toDate ? dated.toDate() : new Date(dated);
@@ -92,101 +70,3 @@ function getNormalDate(dated){
     console.log(dated)
     return `${yyyy}-${MM}-${dd}`;
 }
-
-function isNestedArray(A){ //check if A is 2D array?
-    if(!Array.isArray(A) || A.length==0)return false;
-    for(let i=0;i<A.length;i++)
-        if(!Array.isArray(A[i]))return false;
-    return true;
-}
-
-function isNestedObj(A){ //check if A is 2D array?
-    if(!Array.isArray(A) || A.length==0)return false;
-    for(let i=0;i<A.length;i++)
-        if(typeof(A[i])!='object' || !Array.isArray(A[i].content))return false;
-    return true;
-}
-
-function nested2obj(A,vertical=true){
-    if(!isNestedArray(A)){
-        console.log('ERROR: input is not nested array')
-        return A;
-    }
-    console.log("N2O:",A)
-    if(vertical)
-        A = arrTranspose(A);
-    var Out = [];
-    for(let r = 0; r<A.length; r++){
-        //console.log(A[r])
-        let content = A[r];
-        content = content.toDate ? getNormalDate(content.toDate()) : content;
-        Out.push({content})
-    }
-    return Out;
-}
-
-function obj2nested(A,vertical=true){
-    if(!isNestedObj(A)){
-        console.log('ERROR: input is not nested object')
-        return A;
-    }
-    console.log("O2N:",A)
-    let Out=[];
-    for(let i=0;i<A.length;i++){
-        A[i].content = A[i].content.toDate ? getNormalDate(A[i].content.toDate()) : A[i].content;
-        Out.push(A[i].content);
-    }
-    if(vertical)
-        Out = arrTranspose(Out);
-    return Out;
-}
-
-function repairTree(Tree,mode='n2o'){
-    console.log(Tree,mode)
-    if(Tree==null)return null
-    Tree = Tree.toDate ? getNormalDate(Tree.toDate()) : Tree
-    console.log(Tree,"post date check")
-    if(typeof(Tree)!='object'){
-        console.log("non-obj leave:", Tree)
-        return Tree;
-    }
-    if(mode=='n2o'&&isNestedArray(Tree))
-        Tree = nested2obj(Tree);
-    if(mode=='o2n'&&isNestedObj(Tree))
-        Tree = obj2nested(Tree);
-    if(Array.isArray(Tree)){
-        for(let t=0;t<Tree.length;t++){
-            Tree[t]=repairTree(Tree[t],mode)
-        }
-        console.log("***ARR->ARR: ",Tree)
-    }else{
-        Object.entries(Tree).forEach(pair=>{
-            if(pair[0]!='Timestamp')
-                Tree[pair[0]]=repairTree(pair[1],mode)
-        })
-    }
-    console.log("leave: ",Tree)
-    return Tree;
-}
-
-function isSameDay(a,b){
-    a = a.toDate ? a.toDate() : new Date(a);
-    b = b.toDate ? b.toDate() : new Date(b);
-    if(a.getFullYear()==b.getFullYear())
-        if(a.getMonth()==b.getMonth())
-            if(a.getDate()==b.getDate())
-                return true;
-    return false;
-}
-
-function isNA(a){
-    if(Number.isNaN(a) | a==null | ["null","undefined","NaN","NA"].includes(a))return true
-    return false
-}
-
-function vNA(a,nil=""){
-    return isNA(a)?nil:a
-}
-
-    /*Object.entries(oldTree
-).forEach(pair=>{if(Array.isArray(oldTree[pair[0]]))oldTree[pair[0]]=oldTree[pair[0]][0]})*/
