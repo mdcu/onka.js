@@ -35,17 +35,17 @@ tableToArray = function(TableId){
 
 arrayToTable = function(A,use_th=true){
     if(!is2DArray(A)){log("non 2D array is trying to tabulize!");return []}
-    let HTML_text = '';
+    let HTML_text = '<table>';
     for(let r = 0;r<A.length;r++){
-        HTML_text += (r==0 && use_th)? '<th>' : '<tr>';
+        HTML_text += '<tr>';
         for(let c=0;c<A[r].length;c++){
-            HTML_text += '<td>';
-            HTML_text += ifNA(arr[r][selected[c]],"-");
-            HTML_text += '</td>';
+            HTML_text += (r==0 && use_th)? '<th>' : '<td>';
+            HTML_text += ifNA(A[r][c],"-");
+            HTML_text += (r==0 && use_th)? '</th>' : '</td>';
         }
-        HTML_text += (r==0 && use_th)? '</th>' : '</tr>';
+        HTML_text += '</tr>';
     }
-    return HTML_text;
+    return HTML_text+"</table>";
 }
 
 arrayTranspose = function(A){

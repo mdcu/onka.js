@@ -42,7 +42,7 @@ could be edited to include your own missing label
 a wrapper of isNA to replace NA with specified value
 */
 
-isNA =function(a,NA_text=["null","undefined","NaN","NA"]){return [null,undefined,NaN].includes(a) || NA_text.includes(a)}
+isNA =function(a,NA_text=["null","undefined","NaN","NA",""]){return [null,undefined,NaN].includes(a) || NA_text.includes(a)}
 ifNA = function(a,nil=""){return isNA(a)? nil : a}
 
 /*
