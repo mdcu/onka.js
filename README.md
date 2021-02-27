@@ -1,37 +1,30 @@
-## Welcome to GitHub Pages
+# README
 
-You can use the [editor on GitHub](https://github.com/mdcu/onka.js/edit/main/README.md) to maintain and preview the content for your website in Markdown files.
+## Who is the author?
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+I go by the name mdcu.firebase. Obiviously, this is an alias name. I'm a fulltime physician, a hobbyist web-developer, statistician wanna-be, and part-time data scientist. I'm introvert and self-centric. My skill deck comprises of javascript, CSS, R, spreadsheet, google action script, and basic Python. I love open source and worship Google. I detaste Apple devices and operation system and will never create anything Apple-first. Being a doctor and programmer, I think the worst readable script on Earth is laws.
 
-### Markdown
+## what is onka.js
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+onka.js refers to a personal web-development package to work with HTML5, JS-ES6, CSS3. While the name ends with .js, the package actually contains multiple .js and .css files that work together.
 
-```markdown
-Syntax highlighted code block
+## Principle
 
-# Header 1
-## Header 2
-### Header 3
+onka.js is standalone self-competent package meaning that it requires no dependency outside of the package. Some functions may resemble the popular framework like $ form JQuery but are acutally different which may cause confusion due to differ behaviours. But I will not change anything because I intend to build them according to my personal favour.
 
-- Bulleted
-- List
+## Focus
 
-1. Numbered
-2. List
+### .js objectives
 
-**Bold** and _Italic_ and `Code` text
+- personal preference DOM access and manipualtion style
+- working with <input> and relatives
+- database work in frontend
 
-[Link](url) and ![Image](src)
-```
+### .css objectives
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+- minimalist design which try to make desktop and mobile appearance similar (not responsive, I just not agree with the universe)
+- special preference on monochrome and pastel palette
 
-### Jekyll Themes
+## Support and contact
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/mdcu/onka.js/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+Feel free to ask and contact me at mdcu.firebase@chula.md but please don't expect instantanious reply or script modification.
