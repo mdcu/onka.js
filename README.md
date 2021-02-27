@@ -2,7 +2,7 @@
 
 ## Who is the author?
 
-I go by the name mdcu.firebase. Obiviously, this is an alias name. I'm a fulltime physician and a hobbyist web-developer, statistician wanna-be, and part-time data scientist. I'm introvert and self-centric. My skill deck comprises of javascript, CSS, R, spreadsheet, google action script, and basic Python. I love open source and worship Google. I detaste Apple devices and operation system and will never create anything Apple-first. Being a doctor and programmer, I think the worst readable script on Earth is laws.
+I go by the name mdcu.firebase. Obiviously, this is an alias name. I'm a fulltime physician, a hobbyist web-developer, statistician wanna-be, and part-time data scientist. I'm introvert and self-centric. My skill deck comprises of javascript, CSS, R, spreadsheet, google action script, and basic Python. I love open source and worship Google. I detaste Apple devices and operation system and will never create anything Apple-first. Being a doctor and programmer, I think the worst readable script on Earth is laws.
 
 ## what is onka.js
 
