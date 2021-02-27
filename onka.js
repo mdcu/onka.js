@@ -59,6 +59,12 @@ $ = function(identifier){
     return [...dollar];
 }
 
+parseHTML = function (htmlString) {
+  var div = document.createElement('div');
+  div.innerHTML = htmlString.trim();
+  return div.childNodes;
+}
+
 
 function getNormalDate(dated){
     dated = dated.toDate ? dated.toDate() : new Date(dated);

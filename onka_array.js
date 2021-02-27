@@ -34,9 +34,8 @@ tableToArray = function(TableId){
 }
 
 arrayToTable = function(A,use_th=true){
+    if(!is2DArray(A)){log("non 2D array is trying to tabulize!");return []}
     let HTML_text = '';
-    if(isNestedObj(A))
-        arr=obj2nested(A);
     for(let r = 0;r<A.length;r++){
         HTML_text += (r==0 && use_th)? '<th>' : '<tr>';
         for(let c=0;c<A[r].length;c++){
