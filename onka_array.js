@@ -40,7 +40,7 @@ arrayToTable = function(A,use_th=true){
         HTML_text += (r==0 && use_th)? '<th>' : '<tr>';
         for(let c=0;c<A[r].length;c++){
             HTML_text += '<td>';
-            HTML_text += vNA(arr[r][selected[c]],"-");
+            HTML_text += ifNA(arr[r][selected[c]],"-");
             HTML_text += '</td>';
         }
         HTML_text += (r==0 && use_th)? '</th>' : '</tr>';
