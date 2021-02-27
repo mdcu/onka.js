@@ -1,5 +1,40 @@
+@import 'https://fonts.googleapis.com/css?family=Sarabun|Roboto';
+
+:root {
+  --base-bg: rgb(240,240,240);
+  --highlight: rgb(200,200,200);
+  --hover: rgba(255,255,255,0.5);
+}
+
 * {box-sizing: border-box;padding: 1px;margin: 1px;}
-body {font-family: sans-serif;}
+body {font-family: "Roboto","Sarabun",sans-serif;}
 a {text-decoration: none;}
 
-textarea {resize: vertical;}
+h1 {font-size: 2rem}
+h2 {font-size: 1.6rem}
+h3 {font-size: 1.2rem}
+h4 {font-size: 1rem}
+h5 {font-size: 0.8rem}
+
+input {font-size:1rem;background-color: var(--base-bg);border-left-style: none;border-right-style: none;border-top-style: none;}
+
+textarea {font-size:1.2rem;background-color: var(--base-bg);resize: vertical;border-left-style: none;border-top-style: none;}
+
+select {font-size:1rem;background-color: var(--base-bg);}
+
+input:focus, textarea:focus, select:focus {background-color: var(--highlight);}
+body *:hover {background-color: var(--hover)}
+
+/*switcher normal*/
+label > span {background-color: var(--base-bg);padding-left: 0.3rem;padding-right: 0.3rem;border-radius: 0.5rem;}
+label > input[type=radio] {display:none}
+input[type=radio]:checked + span{background-color: var(--highlight)}
+
+/*switcher with value*/
+label > input[type=checkbox] {display: none;}
+#switchsex::before {content: "Female";color:red; :2}
+input:checked + #switchsex::before {content: "Male";color:blue;tab-size: :1}
+
+/*block one liner display*/
+.oneliner * {display: block; width: 80%;margin-top: 0.2rem;}
+.oneliner p {margin-top: 1rem;}

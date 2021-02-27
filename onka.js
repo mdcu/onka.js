@@ -53,12 +53,24 @@ otherwise return an array of objects
 */
 $ = function(identifier){
     let dollar = document.querySelectorAll(identifier);
-    if(dollar.length==0) dollar = document.querySelectorAll("#"+identifier);
     if(dollar.length==0){log(identifier+" not found!");return [];}
     if(identifier[0]=="#")return dollar[0];
     return [...dollar];
 }
+/*
+# $pseudo(id,pseudo,property)
+This is a very unique function to obtain value of pseudo element
+Specifically  design to use with switch-type css trick
+<<open onka_base.css and search for `switcher`>>
+Even more complicated, to hold a value, find non-use property and store there
+I personally suggest tab-size / tabSize for non-content value
+*/
+$pseudo = function(id,pseudo="::before",property="content"){return window.getComputedStyle($(id),pseudo)[property]}
 
+/*
+# parseHTML
+insert HTML string and return a DOM element to insert in HTML
+*/
 parseHTML = function (htmlString) {
   var div = document.createElement('div');
   div.innerHTML = htmlString.trim();
