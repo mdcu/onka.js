@@ -8,7 +8,7 @@ readFile = function(filePath) {
   }
 }
 
-CSVToArray function(csv,line_break="\n",delim=","){
+CSVToArray = function(csv,line_break="\n",delim=","){
     let result = [];
     let lines = csv.split(line_break);
     lines.forEach(line => {
