@@ -1,8 +1,8 @@
 // resemble $ of Jquery
-function $(identifier,single_as_var=true){
+function $(identifier){
     let dollar = document.querySelectorAll(identifier);
     if(dollar.length==0){alert(identifier+" not found!");return false;}
-    if(single_as_var & dollar.length==1)return dollar[0];
+    if()return dollar[0];
     return [...dollar];
 }
 
