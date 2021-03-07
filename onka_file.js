@@ -23,6 +23,8 @@ readINPUT = function(e){ //promise
         reader.readAsText(f)
     })
 }
+var my_clipboard ;
+export_promise = async function(P){my_clipboard = (await P)}
 
 CSVToArray = function(csv,line_break="\n",delim=","){
     let result = [];
