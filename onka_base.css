@@ -17,6 +17,7 @@ h4 {font-size: 1rem}
 h5 {font-size: 0.8rem}
 
 input {font-size:1rem;background-color: var(--base-bg);border-left-style: none;border-right-style: none;border-top-style: none;}
+input[type=button] {padding: 0.1em 1em; border-style:solid; border-radius:0.5em;}
 
 textarea {font-size:1.2rem;background-color: var(--base-bg);resize: vertical;border-left-style: none;border-top-style: none;}
 
@@ -38,3 +39,11 @@ input:checked + #switchsex::before {content: "Male";color:blue;tab-size: :1}
 /*block one liner display*/
 .oneliner * {display: block; width: 80%;margin-top: 0.2rem;}
 .oneliner p {margin-top: 1rem;}
+
+/*flexbox*/
+.rowFlex {display:flex}
+.colFlex1 {flex:1}
+.colFlex2 {flex:2}
+.colFlex3 {flex:3}
+.colFlex4 {flex:4}
+.colFlex5 {flex:5}
