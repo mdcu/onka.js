@@ -8,16 +8,20 @@ readURL = function(filePath) {
   }
 }
 
-readINPUT = function(e){ // readINPUT(event) in input file
-    console.log(e)
+
+readINPUT = function(e){ //promise
     var f = e.target.files[0]
-    console.log(f)
     var reader = new FileReader()
-    reader.onload = function(){
-        let data = reader.result
-        console.log(data)
-    }
-    return reader.readAsText(f)
+    return new Promise(function(resolve,reject){
+        reader.onerror = function(){
+            reader.abort()
+            reject()
+        }
+        reader.onload = function(){
+            resolve(reader.result)
+        }
+        reader.readAsText(f)
+    })
 }
 
 CSVToArray = function(csv,line_break="\n",delim=","){
