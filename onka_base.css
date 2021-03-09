@@ -24,7 +24,6 @@ textarea {font-size:1.2rem;background-color: var(--base-bg);resize: vertical;bor
 select {font-size:1rem;background-color: var(--base-bg);}
 
 input:focus, textarea:focus, select:focus {background-color: var(--highlight);}
-body *:hover {background-color: var(--hover)}
 
 /*switcher normal*/
 label > span {background-color: var(--base-bg);padding-left: 0.3rem;padding-right: 0.3rem;border-radius: 0.5rem;}

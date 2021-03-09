@@ -30,6 +30,7 @@ CSVToArray = function(csv,line_break="\n",delim=","){
     let result = [];
     let lines = csv.split(line_break);
     lines.forEach(line => {
+        line = line.trim()
         if(!isNA(line))result.push(line.split(delim));
     });
     return(result)
