@@ -84,3 +84,17 @@ array2DSort = function(A,header=false,sortby=0,mode=1){
     }
     return A;
 }
+
+rotateArray = function(A,index,revert=false){
+    let B = []
+    if(revert){
+        for(let i = A.length-1;i>=0;i--)
+            B.push(A[i])
+        index = A.length-1-index
+    }else{B=JSON.parse(JSON.stringify(A))}
+    let C = []
+    for(let i=0;i<B.length;i++){
+        C.push(B[(i+index)%B.length])
+    }
+    return(C)
+}
