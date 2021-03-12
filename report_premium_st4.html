@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="viewport" content="user-scalable=no, width=device-width"/>
+    <meta name="apple-mobile-web-app-title" content="cOSCE"/>
+    <title>Premium Clinic Report Template</title>
+    <link rel="icon" href="asset/onka.png" type="image/x-icon"/>
+    <link rel="stylesheet" href="onka_base.css"/>
+    <link rel="stylesheet" href="onka_print.css"/>
+
+    <script src="onka.js"></script>
+    <script src="onka_array.js"></script>
+    <script src="onka_file.js"></script>
+    <script src="onka_dom.js"></script>
+  </head>
+  <body>
+
+    <!--page 1-->
+    <div class="page"><div class="subpage">
+      <h2>ส่วนที่ 1. ข้อมูลส่วนบุคคล</h2>
+      <div class="rowFlex">
+        <div class="colFlex1">
+          <h3>ข้อมูลพื้นฐาน</h3>
+          <p contenteditable="false">วันที่บันทึกประวัติ <input type=date></p>
+          <br>
+          <p contenteditable="false">ชื่อ นามสกุล <input></p>
+          <p contenteditable="false">เลขที่โรงพยาบาล <input></p>
+          <p contenteditable="false">วันเดือนปีเกิด <input type=date></p>
+          <p contenteditable="false">ที่อยู่ปัจจุบัน <textarea></textarea></p>
+          <p contenteditable="false">เบอร์โทรศัพท์ <input></p>
+          <br>
+          <p contenteditable="false">ชื่อ บุคลติดต่อฉุกเฉิน <input></p>
+          <p contenteditable="false">ความสัมพันธ์เป็น <input></p>
+          <p contenteditable="false">เบอร์โทรศัพท์ <input></p>
+        </div>
+        <div class="colFlex2">
+          <h3>โรคประจำตัว</h3>
+          <div class="rowFlex" contenteditable="true">
+            <div class="colFlex2"><p contenteditable="false">ชื่อโรค</p><p> </p></div>
+            <div class="colFlex1"><p contenteditable="false">รักษาที่</p><p> </p></div>
+            <div class="colFlex1"><p contenteditable="false">วินิจฉัย</p><p></p></div>
+          </div>
+          <h3>ประวัติการผ่าตัด</h3>
+          <div class="rowFlex" contenteditable="true">
+            <div class="colFlex2"><p contenteditable="false">การผ่าตัด</p><p></p></div>
+            <div class="colFlex1"><p contenteditable="false">ผ่าตัดเมื่อ</p><p></p></div>
+          </div>
+          <h3>ประวัติแพ้ยา แพ้อาหาร และผลข้างเคียง</h3>
+          <div class="rowFlex" contenteditable="true">
+            <div class="colFlex1"><p contenteditable="false">ชื่อยา/อาหาร</p><p></p></div>
+            <div class="colFlex2"><p contenteditable="false">อาการ</p><p></p></div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+    <div class="page"><div class="subpage">
+      <h2>ส่วนที่ 1. ข้อมูลส่วนบุคคล</h2>
+    </div></div>
+    <!--part 2 -->
+    <div class="page"><div class="subpage">
+      <h2>ส่วนที่ 2. ผลการประเมินสุขภาพและตรวจร่างกาย</h2>
+      <h3>1) สัดส่วนร่างกาย</h3>
+      <div class=rowFlex>
+        <div class=colFlex1><p contenteditable="false">น้ำหนัก (กิโลกรัม)</p><input id="_wt" onchange="body_cal()"></div>
+        <div class=colFlex1><p contenteditable="false">ส่วนสูง (เซนติเมตร)</p><input id="_ht" onchange="body_cal()"></div>
+        <div class=colFlex1><p contenteditable="false">เส้นรอบเอว (เซนติเมตร)</p><input id="_wc" onchange="body_cal()"></div>
+      </div>
+      <p contenteditable="false">ดัชนีมวลกาย (BMI) = <span id="_bmi"></span> กิโลกรัม/ตารางเมตร</p>
+      <p contenteditable="false">เส้นรอบเอวต่อส่วนสูง = <span id="_whr"></span> </p>
+      <p id="_bmiResult"></p>
+      <p id="_whrResult"></p>
+      <p id="_bodySuggest" contenteditable="true"></p>
+
+    </div></div>
+
+
+
+
+  <script>
+
+    body_cal = function(){
+      let wt = +ID("_wt").value
+      let ht = +ID("_ht").value
+      let wc = +ID("_wc").value
+      let bmi = 10000 * wt / (ht*ht)
+
+      let whr = wc / ht
+
+      !bmi? '': ID("_bmi").innerHTML = bmi.toFixed(2)
+      !whr? '': ID("_whr").innerHTML = whr.toFixed(2)
+
+    }
+    // window.getSelection().focusNode.parentElement
+    addPage = function(){
+      let C = CE("div",{"className":"page"})
+      C.appendChild(CE("div",{"className":"subpage"}))
+      return(C)
+    }
+
+    addElem = function(){
+        let type = prompt("add what?")
+        let elem = CE(type)
+        elem.innerHTML = "type here"
+        elem.contentEditable = "true"
+        elem.addEventListener("focus",console.log(1))
+        elem.addEventListener("blur",console.log(2))
+        $(".subpage")[0].appendChild(elem)
+    }
+
+/*
+document.body.appendChild(CE("div",{"id":"float","className":"floatPanel"}))
+ID("float").appendChild(CE("div",{"className":"floatButton","innerHTML":"h1"})).addEventListener("click",function(){window.getSelection().focusNode.parentElement.parentElement.appendChild(CE("h1"))})
+ID("float").appendChild(CE("div",{"className":"floatButton","innerHTML":"h2"})).addEventListener("click",function(){window.getSelection().focusNode.parentElement.parentElement.appendChild(CE("h2"))})
+ID("float").appendChild(CE("div",{"className":"floatButton","innerHTML":"p"})).addEventListener("click",function(){window.getSelection().focusNode.parentElement.parentElement.appendChild(CE("p"))})
+
+*/
+
+
+
+    initPageApp = function(){
+      document.body.appendChild(CE("div",{"id":"book","className":"book","contenteditable":"true"}))
+      document.body.appendChild(CE("div",{"id":"float","className":"floatPanel"})).appendChild(CE("input",{"type":"button","className":"floatPanel"})).addEventListener("click",addElem)
+      ID("book").appendChild(addPage())
+
+    }
+    //initPageApp()
+
+    //page 1
+    /*let P1 = ID("book").appendChild(CE("div",{"className":"page"})).appendChild(CE("div",{"className":"subpage"}))
+    P1.appendChild(CE("h1",{"innerHTML":"Title"}))
+    let FPG = +prompt("FPG=? mg/dL")
+    if(FPG){
+      P1.appendChild(CE("h2",{"innerHTML":"FPG"}))
+      if(FPG>126){P1.appendChild(CE("p",{"innerHTML":"Your sugar is in diabetic range"}))}else
+      if(FPG>100){P1.appendChild(CE("p",{"innerHTML":"Your sugar is in pre-diabetic range"}))}else
+      {P1.appendChild(CE("p",{"innerHTML":"Your sugar is normal"}))}
+    }
+    let SBP = +prompt("SBP=? mg/dL")
+    if(SBP){
+      P1.appendChild(CE("h2",{"innerHTML":"Blood pressure"}))
+      if(SBP>140){P1.appendChild(CE("p",{"innerHTML":"High blood pressure"}))}else
+      if(SBP>130){P1.appendChild(CE("p",{"innerHTML":"Be caution ff ksdjg kjrg miwqugm uwri miu niweug ndign iwgwirn uwegu mw uwu nwjg guiw guwpe;fgeo igr;ag idghsihgjfhgkdjfhgdkjfhg jhd irug iwugiwr guirge;gu slig"}))}else
+      {P1.appendChild(CE("p",{"innerHTML":"OK BP!"}))}
+    }*/
+  </script>
+  </body>
+</html>

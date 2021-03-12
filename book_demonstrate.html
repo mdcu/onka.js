@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="viewport" content="user-scalable=no, width=device-width"/>
+    <meta name="apple-mobile-web-app-title" content="cOSCE"/>
+    <title>Try to print me</title>
+    <link rel="icon" href="asset/onka.png" type="image/x-icon"/>
+    <link rel="stylesheet" href="onka_base.css"/>
+    <link rel="stylesheet" href="onka_print.css"/>
+
+    <script src="onka.js"></script>
+    <script src="onka_array.js"></script>
+    <script src="onka_file.js"></script>
+    <script src="onka_dom.js"></script>
+  </head>
+  <body>
+
+  <script>
+    // window.getSelection().focusNode.parentElement
+    addPage = function(){
+      let C = CE("div",{"className":"page"})
+      C.appendChild(CE("div",{"className":"subpage"}))
+      return(C)
+    }
+
+    addElem = function(){
+        let type = prompt("add what?")
+        let elem = CE(type)
+        elem.innerHTML = "type here"
+        elem.contentEditable = "true"
+        elem.addEventListener("focus",console.log(1))
+        elem.addEventListener("blur",console.log(2))
+        $(".subpage")[0].appendChild(elem)
+    }
+
+/*
+document.body.appendChild(CE("div",{"id":"float","className":"floatPanel"}))
+ID("float").appendChild(CE("div",{"className":"floatButton","innerHTML":"h1"})).addEventListener("click",function(){window.getSelection().focusNode.parentElement.parentElement.appendChild(CE("h1"))})
+ID("float").appendChild(CE("div",{"className":"floatButton","innerHTML":"h2"})).addEventListener("click",function(){window.getSelection().focusNode.parentElement.parentElement.appendChild(CE("h2"))})
+ID("float").appendChild(CE("div",{"className":"floatButton","innerHTML":"p"})).addEventListener("click",function(){window.getSelection().focusNode.parentElement.parentElement.appendChild(CE("p"))})
+
+*/
+
+
+
+    initPageApp = function(){
+      document.body.appendChild(CE("div",{"id":"book","className":"book","contenteditable":"true"}))
+      document.body.appendChild(CE("div",{"id":"float","className":"floatPanel"})).appendChild(CE("input",{"type":"button","className":"floatPanel"})).addEventListener("click",addElem)
+      ID("book").appendChild(addPage())
+
+    }
+    initPageApp()
+
+    //page 1
+    /*let P1 = ID("book").appendChild(CE("div",{"className":"page"})).appendChild(CE("div",{"className":"subpage"}))
+    P1.appendChild(CE("h1",{"innerHTML":"Title"}))
+    let FPG = +prompt("FPG=? mg/dL")
+    if(FPG){
+      P1.appendChild(CE("h2",{"innerHTML":"FPG"}))
+      if(FPG>126){P1.appendChild(CE("p",{"innerHTML":"Your sugar is in diabetic range"}))}else
+      if(FPG>100){P1.appendChild(CE("p",{"innerHTML":"Your sugar is in pre-diabetic range"}))}else
+      {P1.appendChild(CE("p",{"innerHTML":"Your sugar is normal"}))}
+    }
+    let SBP = +prompt("SBP=? mg/dL")
+    if(SBP){
+      P1.appendChild(CE("h2",{"innerHTML":"Blood pressure"}))
+      if(SBP>140){P1.appendChild(CE("p",{"innerHTML":"High blood pressure"}))}else
+      if(SBP>130){P1.appendChild(CE("p",{"innerHTML":"Be caution ff ksdjg kjrg miwqugm uwri miu niweug ndign iwgwirn uwegu mw uwu nwjg guiw guwpe;fgeo igr;ag idghsihgjfhgkdjfhgdkjfhg jhd irug iwugiwr guirge;gu slig"}))}else
+      {P1.appendChild(CE("p",{"innerHTML":"OK BP!"}))}
+    }*/
+  </script>
+  </body>
+</html>

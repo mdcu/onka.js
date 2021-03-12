@@ -1,0 +1,80 @@
+:root {
+  --page-margin-left: 1.5cm;
+  --page-margin-right: 1.5cm;
+  --page-margin-top: 2cm;
+  --page-margin-bottom: 1.5cm;
+}
+
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: rgb(200,200,200);
+}
+* {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+.page {
+    width: 210mm;
+    min-height: 297mm;
+    padding-top:var(--page-margin-top);
+    padding-left:var(--page-margin-left);
+    padding-right:var(--page-margin-right);
+    padding-bottom:var(--page-margin-bottom);
+    margin: 10mm auto;
+    border: 1px gray solid;
+    border-radius: 5px;
+    background: white;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+.subpage {
+    padding: 1cm;
+    border: 1px gray solid;
+    height: 26.1cm;
+    /*outline: 2cm #FFEAEA solid;*/
+}
+
+p, input, textarea {font-size:16px;margin-top:0.2em;}
+
+h1, h2, h3, h4 {margin-top: 0.5em;margin-bottom: 0.5em;}
+
+p[contenteditable="false"]{font-weight: bold;}
+
+.subpage p,h1,h2,h3,input,textarea {text-indent: 1em; border: 1px dashed gray;}
+
+.floatPanel {
+  position: absolute;
+  top: 1em;
+  right: 1em;
+}
+
+
+@page {
+    size: A4;
+    margin: 0;
+}
+@media print {
+    html, body {
+        width: 210mm;
+        height: 297mm;
+    }
+    .page {
+        margin: 0;
+        border: initial;
+        border-radius: initial;
+        width: initial;
+        min-height: initial;
+        box-shadow: initial;
+        background: initial;
+        page-break-after: always;
+    }
+    .subpage {border: 0px solid;}
+
+    .subpage p,h1,h2,h3,input,textarea {border: 0px solid white;}
+
+    .subpage input[type=checkbox]+p {display:none}
+    .subpage input[type=checkbox]:checked+p {display:block}
+    .subpage input[type=checkbox], .floatPanel {display:none}
+}
