@@ -67,11 +67,13 @@
         <div class=colFlex1><p contenteditable="false">ส่วนสูง (เซนติเมตร)</p><input id="_ht" onchange="body_cal()"></div>
         <div class=colFlex1><p contenteditable="false">เส้นรอบเอว (เซนติเมตร)</p><input id="_wc" onchange="body_cal()"></div>
       </div>
+      <br>
       <p contenteditable="false">ดัชนีมวลกาย (BMI) = <span id="_bmi"></span> กิโลกรัม/ตารางเมตร</p>
       <p contenteditable="false">เส้นรอบเอวต่อส่วนสูง = <span id="_whr"></span> </p>
+      <br><br>
       <p id="_bmiResult"></p>
       <p id="_whrResult"></p>
-      <p id="_bodySuggest" contenteditable="true"></p>
+      <p id="_bodySuggest" class="suggestion" contenteditable="true"></p>
 
     </div></div>
 
@@ -90,6 +92,34 @@
 
       !bmi? '': ID("_bmi").innerHTML = bmi.toFixed(2)
       !whr? '': ID("_whr").innerHTML = whr.toFixed(2)
+
+      const bmiObeseCriteria = 23.5
+      const bmiUnderCriteria = 18.5
+
+      if(bmi > bmiObeseCriteria){
+        ID("_bmiResult").innerHTML = "ดัชนีมวลกายสูงเกินเกณฑ์"
+        ID("_bmiResult").className = "alert"
+      }else if(bmi < bmiUnderCriteria){
+        ID("_bmiResult").innerHTML = "ดัชนีมวลกายต่ำกว่าเกณฑ์"
+        ID("_bmiResult").className = "alert"
+      }else{
+        ID("_bmiResult").innerHTML = "ดัชนีมวลกายอยู่ในเกณฑ์ปกติ"
+      }
+
+      if(whr > 0.5){
+        ID("_whrResult").innerHTML = "รอบเอวต่อส่วนสูงเกินเกณฑ์"
+        ID("_whrResult").className = "alert"
+      }else{
+        ID("_whrResult").innerHTML = "รอบเอวอยู่ในเกณฑ์ปกติ"
+      }
+
+      if(bmi < bmiUnderCriteria){
+        ID("_bodySuggest").innerHTML = "มีความเสี่ยงต่อภาวะขาดสารอาหาร ควรกินอาหารให้ครบ 5 หมู่ เน้นอาหารประเภทโปรตีน และออกกำลังกายเพิ่มมวลกล้ามเนื้อ"
+      }else if(bmi > bmiObeseCriteria || whr > 0.5){
+        ID("_bodySuggest").innerHTML = "บ่งบอกถึงภาวะอ้วนควรลดน้ำหนัก ควรควบคุมอาหาร ออกกำลังกายอย่างสม่ำเสมอ"
+      }else{
+        ID("_bodySuggest").innerHTML = "ภาวะโภชนาการเหมาะสมแล้ว"
+      }
 
     }
     // window.getSelection().focusNode.parentElement
