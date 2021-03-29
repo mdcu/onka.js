@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="viewport" content="user-scalable=no, width=device-width"/>
+    <meta name="apple-mobile-web-app-title" content="cOSCE"/>
+    <title>Timeline Maker</title>
+    <link rel="icon" href="http://mdcu.github.io/onka.js/asset/onka.png" type="image/x-icon"/>
+    <link rel="stylesheet" href="http://mdcu.github.io/onka.js/onka_base.css"/>
+    <!--<link rel="stylesheet" href="onka_underproduction.css"/> <!-- comment out this line once design process is done-->
+    <script src="http://mdcu.github.io/onka.js/onka.js"></script>
+    <script src="http://mdcu.github.io/onka.js/onka_array.js"></script>
+    <script src="http://mdcu.github.io/onka.js/onka_file.js"></script>
+    <script src="http://mdcu.github.io/onka.js/onka_dom.js"></script>
+    <!--
+      ```
+        stepwise
+        1) JSON.stringify the examTree
+        2) CryptoJS.AES.encrypt(...,PASSWORD)
+        3) CryptoJS.AES.decrypt(...,PASSWORD).toString(CryptoJS.enc.Utf8)
+        4) JSON.parse(...)
+      ```
+    -->
+    <style>
+
+      #inputPanel, #orderPanel, #controlPanel, #displayPanel {
+        margin-bottom: 1em;
+        padding: 0.5em;
+        border-radius: 0.5em;
+        border: 1px solid gray;
+      }
+      #displayPanel{
+        text-align: center;
+      }
+
+      .dynamicRow {
+        border-bottom: 1px solid gray;
+      }
+
+      #screen {
+        width:600px;
+        height:400px;
+        margin:auto;
+        background-color: rgba(220,220,220,0.5);
+        position: relative;
+      }
+
+      #xbar{
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        background-color: black;
+      }
+
+      #xbar * {
+        position: absolute;
+        text-align: left;
+      }
+
+      #xbar p {
+        width: fit-content;
+        font-size: 0.7em;
+      }
+
+      #xbar div {
+        position: absolute;
+      }
+
+      #xbar div details {
+        font-size: 0.75em;
+        bottom: 1em;
+      }
+      #xbar div > details summary{
+        font-weight: bold;
+        display: inline;
+        position: static;
+      }
+      #xbar div > details span{
+        font-weight: normal;
+        display: inline;
+        width:max-content;
+      }
+
+
+      #xbar div {
+        height:0.2em;
+        margin:0px;
+        padding:1px;
+      }
+
+      #xbar .bout {
+        width: 0px;
+        height: 0px;
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+        border-bottom: 20px solid black;
+      }
+
+      #xbar .shortBar {
+        height: 1em;
+        padding: 1px;
+        border: 1px solid black;
+      }
+
+      #xbar .fullBar {
+        height: 1em;
+        padding: 1px;
+        width: 100%;
+        border: 1px solid black;
+      }
+
+      #inputPanel input{
+          margin-right: 0.5em;
+          font-size: 1em;
+      }
+      .agent {width:15%;min-width:8em;}
+      .startDate, .startTime, .stopDate, .stopTime {width:10%;min-width:10em;}
+      .modifier {width:10%;min-width:4em;}
+      .info {width:25%;min-width:8em;}
+
+      #inputPanel input[type=button]{
+        min-width: 1.2em;
+        width:1.2em;
+        padding:0.1em;
+      }
+      .agentKey {
+        min-width: 5em;
+        margin-right: 1em;
+        font-weight: bold;
+        display: inline-block;
+      }
+      .agentOrder {
+        width: 2em;
+        text-align: center;
+      }
+
+      #YTop, #Ybottom {width:3em;}
+    </style>
+
+
+    <script>
+
+    const MyColors = ["Aqua","Blue","BlueViolet","Brown","Chartreuse","Chocolate",
+  "DarkBlue","DarkGoldenRod","DarkGreen","DarkMagenta","Salmon","DeepPink","Fuchsia",
+"Gold","Green","IndianRed","Grey","Indigo","Khaki","LightGreen","LightPink","Maroon"]
+
+    var inputData = [{"name":"Augmentin","startDate":"2020-10-29","startTime":"","stopDate":"2020-10-31","stopTime":"","modifier":"q 12 h","info":"for URI, non sense ***"},{"name":"Vancomycin","startDate":"2020-10-31","startTime":"13:00","stopDate":"2020-11-12","stopTime":"08:30","modifier":"q 24 h in 4 h","info":"for MRSA + CDIFF"},{"name":"Urticaria","startDate":"2020-11-11","startTime":"09:25","stopDate":"2020-11-13","stopTime":"13:50","modifier":"","info":""},{"name":"CPM","startDate":"2020-11-11","startTime":"10:00","stopDate":"","stopTime":"","modifier":"","info":"whyyyy"}]
+    var orderData = {"Augmentin":{"order":4,"color":"blue"},"CPM":{"order":-2,"color":"green"},"Urticaria":{"order":2,"color":"red"},"Vancomycin":{"order":1,"color":"gold"}}
+    var renderData = {"W":700,"H":500,"T0d":"2020-10-28","T0t":"","T0":new Date("2020-10-27T17:00:00.000Z"),"TXd":"2020-11-15","TXt":"19:00","TX":new Date("2020-11-15T12:00:00.000Z"),"YTop":5,"YBottom":-3}
+
+    inputUpdate = function(d){
+      let emptyness = 0;
+      d.querySelectorAll("input").forEach(i=>{emptyness += i.value==""})
+      console.log(emptyness,d.parentElement.lastElementChild)
+      if(emptyness===7 && d.parentElement.lastElementChild !== d){ // if d is not last child
+        d.parentElement.removeChild(d)
+      }
+      if(emptyness!==7 && d.parentElement.lastElementChild == d){
+        console.log("add")
+        let D = d.cloneNode(true)
+        D.querySelectorAll("input").forEach(i=>{i.value = i.type=="button"? "..." : ""})
+        d.parentElement.appendChild(D)
+      }
+      generateOrder()
+    }
+
+    _update_color = function(e){
+      console.log(e.target)
+      e.target.style.backgroundColor = e.target.value
+    }
+
+    generateOrder = function(){
+      let O = $("#orderPanel")
+      let I = $("#inputPanel")
+      let unique = []
+      let exist = []
+      I.querySelectorAll(".agent").forEach(a=>{if(a.value!="" && !unique.includes(a.value))unique.push(a.value)})
+      console.log("U:",unique)
+      O.querySelectorAll(".agentKey").forEach(a=>{exist.push(a.innerText)})
+      console.log("E:",exist)
+      if(JSON.stringify(exist.sort())!=JSON.stringify(unique.sort())){
+        //render
+        while(O.hasChildNodes())O.removeChild(O.lastChild)
+        let k = unique.length
+        unique.forEach(u=>{
+          O.appendChild(CE("span",{"className":"agentKey","innerText":u}))
+          O.appendChild(CE("input",{"type":"number","className":"agentOrder","value":k--}))
+          O.appendChild(CE("input",{"className":"agentColor","value":MyColors[Math.floor(Math.random()*MyColors.length)]}))
+          O.lastChild.style.backgroundColor = O.lastChild.value
+          //attach function updateColor
+          O.lastChild.addEventListener("change",_update_color)
+          //
+          O.appendChild(CE("br"))
+        })
+      }else{
+        console.log("order will not update")
+      }
+      generateControl()
+    }
+
+    generateControl = function(){
+      let theNow = new Date()
+      ID("inputPanel").querySelectorAll(".startDate").forEach(d=>{
+        theNow = new Date(d.value) < theNow ? new Date(d.value) : theNow
+      })
+      ID("T0d").value = theNow.toISOString().split("T")[0]
+
+      ID("inputPanel").querySelectorAll(".stopDate").forEach(d=>{
+        theNow = new Date(d.value) > theNow ? new Date(d.value) : theNow
+      })
+      ID("TXd").value = theNow.toISOString().split("T")[0]
+    }
+
+    _render_get_data = function(){
+      //// inputData
+      inputData = []
+      ID("inputPanel").querySelectorAll(".dynamicRow").forEach(DR=>{
+        if(DR.children[0].value!==""){
+          inputData.push({
+            "name":DR.children[0].value,
+            "startDate":DR.children[1].value,
+            "startTime":DR.children[2].value,
+            "stopDate":DR.children[3].value,
+            "stopTime":DR.children[4].value,
+            "modifier":DR.children[5].value,
+            "info":DR.children[7].value,
+          })
+        }
+      })
+      //// orderData
+      orderData = {}
+      ID("orderPanel").querySelectorAll(".agentKey").forEach(AK=>{
+        orderData[AK.innerText] = {
+          "order": +AK.nextElementSibling.value,
+          "color": AK.nextElementSibling.nextElementSibling.value
+        }
+      })
+      //// renderData
+      renderData = {
+        "W": +ID("screenW").value,
+        "H": +ID("screenH").value,
+        "T0d": ID("T0d").value,
+        "T0t": ID("T0t").value,
+        "T0" : new Date(ID("T0d").value +" "+ ID("T0t").value),
+        "TXd": ID("TXd").value,
+        "TXt": ID("TXt").value,
+        "TX" : new Date(ID("TXd").value +" "+ ID("TXt").value),
+        "YTop": +ID("YTop").value,
+        "YBottom": +ID("YBottom").value,
+      }
+    }
+
+    _render_set_stage = function(){
+      ID("screen").style.width = renderData.W +"px"
+      ID("screen").style.height = renderData.H +"px"
+      renderData.yScale = renderData.YTop - renderData.YBottom
+      ID("xbar").style.left= "0px"
+      ID("xbar").style.top= Math.floor(renderData.H*renderData.YTop/renderData.yScale)+"px"
+      ID("xbar").style.width=ID("screen").style.width
+      ID("xbar").appendChild(CE("p",{"innerHTML":renderData.T0d+"<br>"+renderData.T0t},{"left":"0px","top":"1em",}))
+      ID("xbar").appendChild(CE("p",{"innerHTML":renderData.TXd+"<br>"+renderData.TXt},{"left":renderData.W+"px","top":"1em",}))
+    }
+
+    _render_draw_stage = function(){
+      let w_base = renderData.TX-renderData.T0
+      inputData.forEach(i=>{
+        console.log(i)
+        //get order level
+        if(Object.keys(orderData).includes(i.name)){
+          let fromT0 = new Date(i.startDate+" "+i.startTime) - renderData.T0
+          let duration = (i.stopDate!=="") ? new Date(i.stopDate+" "+i.stopTime) - new Date(i.startDate+" "+i.startTime) : 10
+
+          console.log(fromT0,duration,w_base)
+          ID("xbar").appendChild(CE("div",{
+
+          },{
+            "bottom":(renderData.H*orderData[i.name].order/renderData.yScale)+"px",
+            "left": (fromT0/w_base)*renderData.W +"px",
+            "width": (duration/w_base)*renderData.W +"px",
+            "backgroundColor":orderData[i.name].color,
+          }))
+          let de = CE("details")
+          de.appendChild(CE("summary",{"innerHTML":i.name}))
+          i.info===""? "":de.appendChild(CE("span",{"innerHTML":i.info}))
+          ID("xbar").lastElementChild.appendChild(de)
+          //insert interval / continuous
+          let bar = ID("xbar").lastElementChild
+          let protocol = _render_decode(i.modifier)
+          if(protocol.mode=="continuous"){
+            bar.appendChild(CE("div",{"className":"fullBar"},{"backgroundColor":orderData[i.name].color,"left":"0px","bottom":"-0.5em"}))
+          }else{
+            let interval = (protocol.interval/w_base)*renderData.W //interval in px unit
+            let totalW =  (duration/w_base)*renderData.W
+            let now = 0
+            while(now <= totalW){
+              if(protocol.drip == 0){
+                bar.appendChild(CE("div",{"className":"bout"},{
+                  "left":(now-4)+"px",
+                }))
+              } else {
+                bar.appendChild(CE("div",{"className":"shortBar"},{
+                  "left":now+"px",
+                  "bottom":"-0.5em",
+                  "width":(protocol.drip/w_base)*renderData.W+"px",
+                  "backgroundColor":orderData[i.name].color,
+                }))
+              }
+              now += interval
+            }
+          }
+        }else{
+          alert("invalid key order:",i.name)
+        }
+      })
+    }
+
+    render = function(){
+      ID("xbar").innerHTML=""
+      //part 1 gain data
+      //_render_get_data()
+      //part 2 set stage
+      _render_set_stage()
+      //part 3 draw it
+      _render_draw_stage()
+    }
+
+    _render_decode = function(encoded){
+      const timeCode = {
+        "m": 1000*60,
+        "h": 1000*60*60,
+        "d": 1000*60*60*24,
+        "M": 1000*60*60*24*7*30,
+        "w": 1000*60*60*24*7,
+        "y": 1000*60*60*24*7*365
+      }
+      try{
+        let E = encoded.split(" ")
+        if(E[0]!="q") return({"mode":"continuous"})
+        let R = {
+        "mode":"interval",
+        "interval": (+E[1]) * timeCode[E[2]],
+        "drip": E[3] == "in" ? (+E[4]) * timeCode[E[5]] : 0
+        }
+        console.log(R)
+        return(R)
+      }catch(error){
+        console.log(E)
+        return({"mode":"continuous"})
+      }
+    }
+    </script>
+  </head>
+  <body>
+    <h1>PED-AIR Timeline Maker</h1>
+    <p>version 0.2 Co-developed by MDCU.FIREBASE</p>
+    <div id="inputPanel">
+      <div class="dynamicRow" onchange="inputUpdate(this)">
+        <input class="agent" placeholder="name"><input class="startDate" type="date" placeholder="start date"><input class="startTime" type="time" placeholder="start time"><input class="stopDate" type="date" placeholder="stop date"><input class="stopTime" type="time" placeholder="stop time"><input class="modifier" placeholder="diplay code"><input type="button" value="..."><input class="info" placeholder="detail to display">
+      </div>
+    </div>
+    <div id="orderPanel">
+    </div>
+    <div id="controlPanel">
+      <label>Width:<input id="screenW" type=number value="600"></label>
+      <label>TimeStart:<input id="T0d" type="date"><input id="T0t" type="time" value="00:00"></label>
+      <label>TimeEnd:<input id="TXd" type="date"><input id="TXt" type="time" value="23:59"></label><br>
+      <label>Height:<input id="screenH" type=number value="400"></label>
+      <label>TopLevel:<input id="YTop" type="number" value=5></label>
+      <label>BottomLevel:<input id="YBottom" type="number" value=0></label><br>
+      <input type="button" id="render" value="Render!" onclick="render()">
+    </div>
+    <div id="displayPanel">
+      <div id="screen">
+        <div id="xbar"></div>
+      </div>
+    </div>
+  </body>
+</html>

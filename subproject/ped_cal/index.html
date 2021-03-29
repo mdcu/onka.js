@@ -1,0 +1,190 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
+        <!-- strip address bar-->
+        <meta name="viewport" content="width=device-width"/>
+        <!--NO SCALE ALLOW-->
+        <meta name="apple-mobile-web-app-title" content="Pediatric Growth Chart @KCMH">
+        <!--<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed|Sarabun&display=swap" rel="stylesheet">
+        <!---->
+		<link rel="stylesheet" href='odb_main.css' media='screen'>
+		<!--<link rel="stylesheet" href='printer.css' media='print'>
+		<!---->
+		<style>
+            body{
+                font-family: 'Roboto Condensed','Sarabun', sans-serif;
+            }
+
+            . {
+                box-sizing: border-box;
+            }
+
+
+            span.inputHead {display: block;text-align: left;margin-top:0.25em;}
+
+            .col33{width:33.33%;}
+            .col50{width:50%;}
+
+            textarea {
+                resize: vertical;
+            }
+
+
+            input[type=number] {
+                background-color: rgba(200,200,200,0.5);border:none;
+                font-size: x-large;margin: 2px auto;
+                text-align: center;width: 90%;height: 7vh;}
+
+            input[type=number]::-webkit-inner-spin-button{
+                background-color: red;
+            }
+
+            span.alert0,span.alert1,span.alert2,span.alert3{
+                border-radius: 0.5em;
+                padding:0.2em;
+            }
+            span.alert0{background-color:lightgreen;}
+            span.alert1{background-color:gold;}
+            span.alert2{background-color:orange;}
+            span.alert3{background-color:salmon;}
+            .labelRadio {
+                display: inline-block;
+                cursor:pointer;
+                font-size: 1.5em;
+                padding:0.2em;margin:0.2em;border-radius:0.5em;border-color:darkgray;
+            }
+            /* Hide the browser's default radio button */
+            .radioButton {
+                position: absolute;
+                opacity: ;cursor: pointer;height: 0;width: 0;
+                background-color:gray;border-color:darkgray;
+            }
+            .radioButton+.labelRadio {
+                background-color:gray;
+            }
+            .radioButton:checked+.labelRadio[for=sexM] {
+                background-color:lightskyblue;
+            }
+            .radioButton:checked+.labelRadio[for=sexW] {
+                background-color:pink;
+            }
+
+            table,tr {width:100%;border-spacing: 0.5em;border-collapse: separate;}
+            table.girl {background-color: pink;}
+            table.boy {background-color: lightskyblue;}
+            td{border-color:white;background-color:white;text-align: center;border-radius: 1em;padding:0.5em;}
+        </style>
+<!-- FIREBASE AUTH 
+<script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
+<link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
+<!-- END OF AUTH -->		
+
+        <script src='stats.js'></script>
+        <script src='who2006.js'></script>
+        <script src='onk_query.js'></script>
+
+		<script>
+            var age=1;
+            var sex=1;
+            var indexA=0;
+            var indexB=0;
+            var weight=0,lh=0,hc=0,ac=0,ts=0,ss=0,bmi=0,wflh=0;
+            //index for who2006
+            var weight_m = 2;var weight_sd = 3;var lh_m = 4;var lh_sd = 5;var bmi_m = 6;var bmi_sd = 7;var hc_m = 8;var hc_sd = 9;var ac_m = 10;var ac_sd = 11;var ts_m = 12;var ts_sd = 13;var ss_m = 14;var ss_sd = 15;
+            function ageToIndexA(age_day){
+                if(age_day<=91) return 59+age_day;
+                let age_month = Math.round(age_day/(365.25/12));
+                return Math.min(age_month,58);  
+            }
+            function lhToIndexB(){
+                if(lh<45)return NaN;
+                return Math.min(Math.round(lh*10-450),750);
+            }
+            function getAgeDay(){
+                let age_y = +document.getElementsByName("age_year")[0].value;
+                let age_m = +document.getElementsByName("age_month")[0].value;
+                let age_d = +document.getElementsByName("age_day")[0].value;
+                return Math.round(age_y*365.25 + age_m*(365.25/12) + age_d);
+            }
+            function adjustSexAge(){
+                age = getAgeDay();
+                sex = +document.querySelector("[name=sex]:checked").value;
+                let classSex = sex==1? "boy":"girl";
+                Array.prototype.slice.call(document.getElementsByTagName("table")).forEach(function(x){x.className=classSex})
+                console.log(classSex)
+                indexA = 148*(sex-1) + ageToIndexA(age);
+                render();
+            }
+
+            function render(){
+                let box1 = document.getElementById("box1");
+                let weight_p = (100*getPercentile("weight")).toFixed(1);
+                let lh_p = (100*getPercentile("lh")).toFixed(1);
+                indexB = 751*(sex-1)+lhToIndexB();
+                bmi = lh>0?(10000*weight/(lh*lh)).toFixed(2):0;
+                wflh = lh>0?(weight/lh).toFixed(2):0;
+                wflh_p = (+getWflhPercentile()).toFixed(2);
+                if(bmi>0)document.getElementById("bmi_span").innerHTML="BMI = "+bmi+" kg/m2"
+                if(wflh>0)document.getElementById("wflh_span").innerHTML="WFH = "+wflh+" kg/cm"
+                let bmi_p = (100*getPercentile("bmi")).toFixed(1);
+                let tmp = weight>0? "<p>Weight: <span class='alert"+alertLevel(weight_p)+"'>"+weight_p+" P</span>.</p>":"";
+                tmp += lh>0? "<p>Height: <span class='alert"+alertLevel(lh_p)+"'>"+lh_p+" P</span>.</p>":"";
+                tmp += bmi>0?"<p>BMI: <span class='alert"+alertLevel(bmi_p)+"'>"+bmi_p+" P</span>.</p>":"";
+                tmp += wflh>0?"<p>WFH: <span class='alert"+alertLevel(wflh_p)+"'>"+wflh_p+" P</span>.</p>":"";
+                box1.innerHTML="";
+                box1.innerHTML+=tmp;
+
+                
+            }
+
+            function alertLevel(p,lv1=75,lv2=90,lv3=95){
+                if(p>lv3 | p<100-lv3)return 3;
+                if(p>lv2 | p<100-lv2)return 2;
+                if(p>lv1 | p<100-lv1)return 1;
+                return 0;
+            }
+
+            function getPercentile(theName){
+                if(indexA<0|indexA>tableA.length|window[theName]==0)return 0;
+                let mean = tableA[indexA][window[theName+"_m"]];
+                let sd = tableA[indexA][window[theName+"_sd"]];
+                console.log(+window[theName],mean,sd)
+                return pnorm((+window[theName]-mean)/sd).toFixed(3);
+            }
+
+            function getWflhPercentile(){
+                if(isNaN(indexB)|indexB>tableB.length)return 0;
+                let mean = tableB[indexB][2];
+                let sd = tableB[indexB][3];
+                console.log(indexB,mean,sd);
+                return pnorm((+wflh-mean)/sd).toFixed(3);
+            }
+
+            function update(e){window[e.name]=e.value;render();}
+		</script>
+    </head>
+    <body>
+
+        <table class="boy">
+            <tr>
+                <input type="radio" class="radioButton" id="sexM" name="sex" value=1 checked onchange="adjustSexAge()">
+                <label class="labelRadio" for="sexM">Boy</label>
+                <input type="radio" class="radioButton" id="sexW" name="sex" value=2 onchange="adjustSexAge()">
+                <label class="labelRadio" for="sexW">Girl</label>
+            </tr>
+            <tr><td class="col33"><span class="inputHead">Year</span><input type="number" name="age_year" value=0 onchange="adjustSexAge()" onfocus="this.value=''"></td><td class="col33"><span class="inputHead">Month</span><input type="number" name="age_month" value=1 onchange="adjustSexAge()" onfocus="this.value=''"></td><td class="col33"><span class="inputHead">Day</span><input type="number" name="age_day" value=0 onchange="adjustSexAge()" onfocus="this.value=''"></td></tr></table>
+        <table class="boy">
+            <tr><td class="col50"><span class="inputHead">Weight (kg)</span><input type="number" name="weight" value=0 onchange="update(this)" onfocus="this.value=''">
+        <span class="inputHead">Height (cm)</span><input type="number" name="lh" value=0 onchange="update(this)" onfocus="this.value=''"><span class="inputHead" id="bmi_span">BMI = ... kg/m2</span><span class="inputHead" id="wflh_span">WFH = ... kg/cm</span></td><td class="col50"><div id="box1" class="report"></div></td></tr>
+            <tr><td class="col50"><span class="inputHead">Head circumference</span><input type="number" name="hc" value=0 onchange="update(this)" onfocus="this.value=''">
+        <br><span class="inputHead">Arm circumference</span><input type="number" name="ac" value=0 onchange="update(this)" onfocus="this.value=''"><span class="inputHead">Triceps skinfold</span><input type="number" name="ts" value=0 onchange="update(this)" onfocus="this.value=''">
+        <span class="inputHead">Subscapular skinfold</span><input type="number" name="ss" value=0 onchange="update(this)" onfocus="this.value=''"></td><td class="col50"></td></tr></table>
+        
+
+        <script>
+            adjustSexAge();
+        </script>
+    </body>
+</html>

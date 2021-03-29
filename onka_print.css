@@ -56,6 +56,10 @@ p[contenteditable="false"]{font-weight: bold;}
   font-style: italic;
 }
 
+.ghost {background-color: rgb(200,100,100)}
+.ghostPanel { background-color: rgba(200,100,200,0.5);}
+.ghostPanel::after{content:" ... This panel won't be printed";font-style: italic;font-size: 0.6em;}
+
 @page {
     size: A4;
     margin: 0;
@@ -85,4 +89,7 @@ p[contenteditable="false"]{font-weight: bold;}
 
     .alert::before{content:"**"}
     .alert{font-weight: bold;}
+
+    .ghost, .ghostPanel {display:none}
+
 }
