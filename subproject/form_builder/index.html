@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="viewport" content="user-scalable=no, width=device-width"/>
+    <meta name="apple-mobile-web-app-title" content="cOSCE"/>
+    <title>Timeline Maker</title>
+    <link rel="icon" href="https://mdcu.github.io/onka.js/asset/onka.png" type="image/x-icon"/>
+    <link rel="stylesheet" href="https://mdcu.github.io/onka.js/onka_base.css"/>
+    <!--<link rel="stylesheet" href="onka_underproduction.css"/> <!-- comment out this line once design process is done-->
+    <script src="https://mdcu.github.io/onka.js/onka.js"></script>
+    <script src="https://mdcu.github.io/onka.js/onka_array.js"></script>
+    <script src="https://mdcu.github.io/onka.js/onka_file.js"></script>
+    <script src="https://mdcu.github.io/onka.js/onka_dom.js"></script>
+    <!--
+      ```
+        stepwise
+        1) JSON.stringify the examTree
+        2) CryptoJS.AES.encrypt(...,PASSWORD)
+        3) CryptoJS.AES.decrypt(...,PASSWORD).toString(CryptoJS.enc.Utf8)
+        4) JSON.parse(...)
+      ```
+    -->
+    <style>
+
+      body {text-align: center;}
+
+      #generator {
+        border-bottom: 1px solid grey;
+      text-align: center;
+      }
+      #renderButton {
+        border:2px solid blue;
+        background: lightblue;
+        border-radius: 2rem;
+        text-align: center;
+        color:blue;
+        font-size: 1.5em;
+        padding:0.25rem;
+        position:relative;
+        top: -1rem;
+      }
+      #renderButton:hover {background-color: white;}
+
+      .empty, .field {display:flex;max-width: 800px;}
+      .empty div {
+        background-color: lightgrey;
+        border: 2px dashed darkgrey;
+        padding: 0.5rem;
+      }
+      .field div {
+        background-color: ivory;
+        border: 2px solid grey;
+        padding: 0.5rem;
+      }
+      div.container {margin:0px;padding:0px;border:0px solid transparent;}
+      .leftHandle, .rightHandle{
+        flex:0.5 1rem;
+        border-radius: 1rem;
+        margin-top:0;
+        margin-bottom: 0;
+        align-items: center;
+        text-align: center;
+      }
+      div.leftRim {
+        width: 1rem;
+        border-radius: 2rem 0 0 2rem;
+        margin:0;
+        border-right:0px;
+      }
+      div.rightRim {
+        width:1rem;
+        border-radius: 0 2rem 2rem 0;
+        margin:0;
+        border-left: 0px;
+      }
+      div.leftBody, div.rightBody {
+        flex:2;
+        margin:0;
+        border-left:0px;
+        border-right:1px dashed lightgrey;
+      }
+      div.rightBody {
+        flex:3;
+        margin:0;
+        border-left:0px;
+        border-right:0px;
+      }
+      span.bigPlus {
+        display: inline-block;
+        width:3rem;
+        height:3rem;
+        margin: auto;
+        border:2px solid grey;
+        background-color: ivory;
+        border-radius: 2rem;
+        vertical-align: middle;
+        text-align: center;
+        line-height: 2.8rem;
+        font-size: 3rem;
+        font-weight: bolder;
+        color: grey;
+      }
+      span.bigPlus::before {content: "+"}
+      span.bigPlus:hover {border:2px solid lightskyblue;color:lightskyblue;}
+      span.bigMinus {
+        display: inline-block;
+        width:3rem;
+        height:3rem;
+        margin: auto;
+        border:2px solid salmon;
+        background-color: pink;
+        border-radius: 2rem;
+        vertical-align: middle;
+        text-align: center;
+        line-height: 2.8rem;
+        font-size: 3rem;
+        font-weight: bolder;
+        color: salmon;
+      }
+      span.bigMinus::before {content: "-"}
+      span.bigMinus:hover {border:2px solid red;color:red;background-color: white;}
+
+      span.upArrow, span.downArrow {
+        display: inline-block;
+        border-left:1rem solid transparent;
+        border-right:1rem solid transparent;
+      }
+      span.upArrow {border-bottom:2rem solid grey;}
+      span.downArrow {border-top:2rem solid grey;}
+      span.upArrow:hover {border-bottom:2rem solid lime;}
+      span.downArrow:hover {border-top:2rem solid lime;}
+
+      .typePicker, .idBox, .nameBox, .detailBox {
+        width:100%;
+        background-color: white;
+        border:1px solid lightgrey;
+        border-radius: 5px;
+      }
+      .detailBox {overflow: none;resize: none;}
+
+      .rightBody input, .rightBody textarea {
+        margin:0.2rem 0 0 0;
+        border:1px solid lightgrey;
+        border-radius: 5px;
+        background-color:white;
+      }
+
+      .subP {font-size: 0.75rem; font-style: italic;color:grey;}
+      .inputNumber {width:100%;}
+      .minNumber, .maxNumber {width:50%;}
+      .inputBinaryValue, .inputChoicesValue {width:25%;}
+      .inputBinaryLabel, .inputChoicesLabel {width:75%;}
+      .inputText, .inputCalculated {width:100%;overflow: none;resize: none;}
+
+      /**/
+      .Number, .Text, .Binary, .Choices, .Calculated, .Hidden {
+        display:flex;
+        max-width:800px;
+      }
+      .leftField, .rightField{
+        flex:1;
+        border:2px solid grey;
+        margin:0;
+        padding:1rem;
+      }
+      .leftField {border-radius:10px 0 0 10px;}
+      .rightField {border-radius:0 10px 10px 0;}
+      .rightField input[type=number]{
+        width:100%;
+        border-radius: 5px;
+        border:1px solid grey;
+        font-size: 1.5em;
+        text-align: center;
+      }
+      .rightField textarea{
+        width:100%;
+        resize: none;
+        overflow-y: hidden;
+      }
+      .rightField label input {display:none}
+      .rightField input + span {
+        display:inline-block;
+        width:100%;
+        border-radius: 5px;
+        border:1px solid grey;
+        font-size: 1.5em;
+        text-align: center
+      }
+      .rightField input[type=radio]:checked + span {
+        border:2px solid blue;
+        color:blue;
+        background-color: white;
+      }
+      /**/
+
+
+
+    </style>
+
+
+    <script>
+
+      fieldRow = function(){
+        let frame = CE("div",{"className":"field"})
+        let leftHandle = CE("div",{"className":"leftHandle"})
+        let leftRim = CE("div",{"className":"leftRim"})
+        let leftBody = CE("div",{"className":"leftBody"})
+        let rightBody = CE("div",{"className":"rightBody"})
+        let rightRim = CE("div",{"className":"rightRim"})
+        let rightHandle = CE("div",{"className":"rightHandle"})
+        frame.appendChild(leftHandle)
+        frame.appendChild(leftRim)
+        frame.appendChild(leftBody)
+        frame.appendChild(rightBody)
+        frame.appendChild(rightRim)
+        frame.appendChild(rightHandle)
+        let upButton = CE("span",{"className":"upArrow"})
+        let downButton = CE("span",{"className":"downArrow"})
+        let minusButton = CE("span",{"className":"bigMinus"})
+        leftHandle.appendChild(upButton)
+        upButton.addEventListener("click",swapUp)
+        downButton.addEventListener("click",swapDown)
+        minusButton.addEventListener("click",deleteRow)
+        leftHandle.appendChild(downButton)
+        rightHandle.appendChild(minusButton)
+        let typePicker = CE("select",{"className":"typePicker"})
+        typePicker.appendChild(CE("option",{"value":"Number","innerHTML":"Number"}))
+        typePicker.appendChild(CE("option",{"value":"Text","innerHTML":"Text"}))
+        typePicker.appendChild(CE("option",{"value":"Binary","innerHTML":"Binary"}))
+        typePicker.appendChild(CE("option",{"value":"Choices","innerHTML":"Choices"}))
+        typePicker.appendChild(CE("option",{"value":"Calculated","innerHTML":"Calculated"}))
+        typePicker.appendChild(CE("option",{"value":"Hidden","innerHTML":"Hidden"}))
+        typePicker.addEventListener("change",updateRightBody)
+        leftBody.appendChild(typePicker)
+        leftBody.appendChild(CE("input",{"className":"idBox","placeholder":"id must be unique"}))
+        leftBody.appendChild(CE("input",{"className":"nameBox","placeholder":"Name to display"}))
+        leftBody.appendChild(CE("textarea",{"className":"detailBox","placeholder":"detail will appear below the Name"})).addEventListener("input",_textareaResize)
+        rightBody.appendChild(_deliver("Number"))
+        return(frame)
+      }
+
+      emptyRow = function(){
+        let frame = CE("div",{"className":"empty"})
+        let leftHandle = CE("div",{"className":"leftHandle"})
+        let leftRim = CE("div",{"className":"leftRim"})
+        let leftBody = CE("div",{"className":"leftBody"})
+        let rightBody = CE("div",{"className":"rightBody"})
+        let rightRim = CE("div",{"className":"rightRim"})
+        let rightHandle = CE("div",{"className":"rightHandle"})
+        frame.appendChild(leftHandle)
+        frame.appendChild(leftRim)
+        frame.appendChild(leftBody)
+        frame.appendChild(rightBody)
+        frame.appendChild(rightRim)
+        frame.appendChild(rightHandle)
+        let plusButton = CE("span",{"className":"bigPlus"})
+        plusButton.addEventListener("click",addNew)
+        leftBody.appendChild(plusButton)
+        return(frame)
+      }
+
+      addNew = function(e){
+        ID("generator").replaceChild(fieldRow(),e.target.parentElement.parentElement)
+        ID("generator").appendChild(e.target.parentElement.parentElement)
+      }
+
+      deleteRow = function(e){
+        let thisRow = e.target.parentElement.parentElement
+        thisRow.parentElement.removeChild(thisRow)
+      }
+
+      swapUp = function(e){
+        let thisRow = e.target.parentElement.parentElement
+        if(thisRow.parentElement.firstElementChild!=thisRow){
+          thisRow.parentElement.insertBefore(thisRow,thisRow.previousElementSibling)
+        }
+      }
+
+      swapDown = function(e){
+        let thisRow = e.target.parentElement.parentElement
+        if(thisRow.parentElement.lastElementChild.previousElementSibling!=thisRow){
+          thisRow.parentElement.insertBefore(thisRow.nextElementSibling,thisRow)
+        }
+      }
+
+      updateRightBody = function(e){
+        let order = e.target.value
+        let theRight = e.target.parentElement.nextElementSibling
+        theRight.innerHTML = ""
+        theRight.appendChild(_deliver(order))
+      }
+
+      _deliver = function(order){
+        let c = CE("div",{"className":"container"})
+        if(order=="Number"){
+          c.appendChild(CE("input",{"type":"number","className":"inputNumber","placeholder":"insert default value here"}))
+          c.appendChild(CE("input",{"type":"number","className":"minNumber","placeholder":"minimum allow"}))
+          c.appendChild(CE("input",{"type":"number","className":"maxNumber","placeholder":"maximum allow"}))
+        }else if(order=="Text"){
+          c.appendChild(CE("textarea",{"className":"inputText","placeholder":"insert defualt text here"})).addEventListener("input",_textareaResize)
+        }else if(order=="Binary"){
+          c.appendChild(CE("input",{"className":"inputBinaryValue","value":0}))
+          c.appendChild(CE("input",{"className":"inputBinaryLabel","value":"No"}))
+          c.appendChild(CE("input",{"className":"inputBinaryValue","value":1}))
+          c.appendChild(CE("input",{"className":"inputBinaryLabel","value":"Yes"}))
+          c.appendChild(CE("p",{"className":"subP","innerHTML":"first row will be the default"}))
+        }else if(order=="Calculated" || order=="Hidden"){
+          c.appendChild(CE("textarea",{"className":"inputCalculated"})).addEventListener("input",_textareaResize)
+          c.appendChild(CE("p",{"className":"subP","innerHTML":"insert formular here, which can contain standard mathematic symbols and refer to variable names with corresponsing id for example 10000*weight/(height^2)"}))
+        }else if(order=="Choices"){
+          c.appendChild(CE("p",{"className":"subP","innerHTML":"first row will be the default"}))
+          let d = c.appendChild(CE("div",{"className":"container"}))
+          d.appendChild(CE("input",{"className":"inputChoicesValue","value":0}))
+          d.appendChild(CE("input",{"className":"inputChoicesLabel","value":""})).addEventListener("change",_dynamic)
+        }else{
+          c.appendChild("textarea")
+        }
+        return(c)
+      }
+
+      _dynamic = function(e){
+        let t = e.target
+        if(t.value=="" && t.parentElement != t.parentElement.parentElement.lastElementChild){
+          t.parentElement.parentElement.removeChild(t.parentElement)
+        }else if(t.value !="" && t.parentElement == t.parentElement.parentElement.lastElementChild){
+          let tt = t.parentElement.cloneNode(true)
+          tt.lastElementChild.value=""
+          tt.addEventListener("change",_dynamic)
+          t.parentElement.parentElement.appendChild(tt)
+        }
+      }
+
+      _textareaResize = function(e){
+        let t = e.target
+        t.style.height = "1.2em"
+        t.style.height = t.scrollHeight+5+"px"
+      }
+      var tree={"field":[]}
+      _render = function(){
+        tree={"field":[]}
+        tree.title = ID("titleBox").value
+        document.querySelectorAll(".field").forEach(d=>{
+          let tmp = {}
+          tmp.type = d.querySelector(".typePicker").value
+          tmp.id = d.querySelector(".idBox").value
+          tmp.name = d.querySelector(".nameBox").value
+          tmp.detail = d.querySelector(".detailBox").value
+          if(tmp.type=="Number"){
+            tmp.default = +d.querySelector(".inputNumber").value
+            tmp.min = d.querySelector(".minNumber").value
+            tmp.max = d.querySelector(".maxNumber").value
+          }else if(tmp.type=="Text"){
+            tmp.default = d.querySelector(".inputText").value
+          }else if(tmp.type=="Binary"){
+            tmp.value = [+d.querySelectorAll(".inputBinaryValue")[0].value,+d.querySelectorAll(".inputBinaryValue")[1].value]
+            tmp.label = [d.querySelectorAll(".inputBinaryLabel")[0].value,d.querySelectorAll(".inputBinaryLabel")[1].value]
+          }else if(tmp.type=="Choices"){
+            tmp.value=[]
+            tmp.label=[]
+            d.querySelectorAll(".inputChoicesValue").forEach(cv=>{tmp.value.push(+cv.value)})
+            d.querySelectorAll(".inputChoicesLabel").forEach(cl=>{tmp.label.push(cl.value)})
+            tmp.value.pop()
+            tmp.label.pop()
+          }else if(tmp.type=="Calculated" || tmp.type=="Hidden"){
+            tmp.formular = d.querySelector(".inputCalculated").value
+          }
+          tree.field.push(tmp)
+        })
+        _render2()
+      }
+
+      _render2 = function(Target=ID("Body")){
+        Target.innerHTML = ""
+        Target.appendChild(document.createElement("h1")).innerHTML = tree.title
+    tree.field.forEach(r=>{
+        let D = Target.appendChild(CE("div",{"className":r.type}))
+        let L = D.appendChild(CE("div",{"className":"leftField"}))
+        let R = D.appendChild(CE("div",{"className":"rightField"}))
+        L.appendChild(CE("h2",{"innerHTML":r.name}))
+        L.appendChild(CE("p",{"innerHTML":r.detail}))
+        if(r.type=="Number"){
+            R.innerHTML = '<input type=number id="'+r.id+'" min="'+r.min+'" max="'+r.max+'" value="'+r.default+'" onchange="_number(this)">'
+        }else if(r.type=="Text"){
+            R.innerHTML = '<textarea id="'+r.id+'">'
+        }else if(r.type=="Binary"){
+            R.innerHTML= '<label><input type=checkbox id="'+r.id+'" data-value-false="'+r.value[0]+'" data-value-true="'+r.value[1]+'" data-label-false="'+r.label[0]+'" data-label-true="'+r.label[1]+'" onchange="_binary(this)"><span>'+r.label[0]+'</span></label>'
+        }else if(r.type=="Choices"){
+            for(let i=0;i<r.value.length;i++){
+                R.innerHTML += '<label><input type=radio value="'+r.value[i]+'" name="'+r.id+'" onchange="_choices()"><span>'+r.label[i]+'</span></label>'
+            }
+        }else if(r.type=="Calculated" || r.type=="Hidden"){
+            R.innerHTML = '<input class=automate type=number id="'+r.id+'" onclick="_collect();this.value='+r.formular+';">'
+        }
+    })
+}
+
+      window.onload = function(){
+        ID("generator").appendChild(CE("input",{"id":"titleBox"}))
+        ID("generator").appendChild(emptyRow())
+      }
+   // HTML function
+   _binary=function(t){
+     t.nextElementSibling.innerHTML = t.checked ? t.dataset.labelTrue:t.dataset.labelFalse;_collect();}
+   _number=function(t){
+     if(t.min!="" && (+t.value < +t.min)){
+       t.value=t.min
+     };
+     if(t.max!="" && (+t.value > +t.max)){
+       t.value=t.max
+     };
+     _collect();
+   }
+   _choices=function(){_collect();}
+   _collect = function(){
+    document.querySelectorAll(".rightField input[type=number]").forEach(i=>{if(i.id!=undefined) window[i.id] = +i.value});
+    document.querySelectorAll(".rightField input[type=checkbox]").forEach(i=>{if(i.id!=undefined) window[i.id] = i.checked ? +i.dataset.valueTrue: +i.dataset.valueFalse});
+    document.querySelectorAll(".rightField input[type=radio]").forEach(i=>{if(i.name!=undefined && i.checked) window[i.name]= +i.value});
+    document.querySelectorAll(".rightField .automate").forEach(i=>(i.click()))
+}
+
+    _store = function(){
+      let code = Math.random().toString(36).substring(7)
+      localStorage.setItem(code,JSON.stringify(tree))
+      alert("?code="+code)
+    }
+
+    </script>
+  </head>
+  <body>
+    <div id=generator>
+
+    </div>
+    <input type=button id="renderButton" onclick="_render()" value="Render">
+    <input type=button id="saveButton" onclick="_store()" value="Save">
+    <div id=Body>
+    </div>
+  </body>
+</html>
