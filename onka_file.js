@@ -26,7 +26,7 @@ readINPUT = function(e){ //promise
 var my_clipboard ;
 export_promise = async function(P){my_clipboard = (await P)}
 
-CSVToArray = function(csv,line_break="\n",delim=","){
+/*CSVToArray = function(csv,line_break="\n",delim=","){
     let result = [];
     let lines = csv.split(line_break);
     lines.forEach(line => {
@@ -34,4 +34,32 @@ CSVToArray = function(csv,line_break="\n",delim=","){
         if(!isNA(line))result.push(line.split(delim));
     });
     return(result)
-}
+}*/
+function CSVToArray(S){
+	let res = [[]]
+	let sign = []
+	let p = /\"|\n|\r|,/g
+	while((m = p.exec(S))!=null){
+		sign.push(m.index)
+	}
+	sign.forEach(s=>console.log(s,S[s]))
+	let si = 0
+	let index = 0
+	while(si < sign.length){
+		if(S[sign[si]]==","){
+			res[res.length-1].push(S.substr(index,sign[si]-index))
+			index = sign[si]+1
+		}else if(S[sign[si]]=="\n" || S[sign[si]]=="\r" ){
+			res[res.length-1].push(S.substr(index,sign[si]-index))
+			index = sign[si]+1
+			res.push([])
+		}else if(S[sign[si]]=='"'){
+			//index = sign[si]+1
+			do{console.log(sign[si++])}while(S[sign[si]]!='"' && si < sign.length)
+			//res[res.length-1].push(S.substr(index,sign[si]-index))
+			//index = sign[si++]+1
+		}else{console.log(sign[si])}
+		si++
+	}
+	return res
+};

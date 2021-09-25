@@ -1,0 +1,25 @@
+
+
+function getInputData(){
+    let dataToPost = new FormData(); //formdata API
+
+    //fill name attributes to corresponding values
+
+    dataToPost.append("entry.398040033", 1234); // get these from google form source code
+    
+    return dataToPost;
+};
+
+fetch("https://docs.google.com/forms/u/0/d/e/1FAIpQLScOeRsplDzUKUoWMTAWjlD2USOm6cj2eDvTC22x43KbTiwPhQ/formResponse",{ // the form URL
+        method: "POST",
+        mode: "no-cors",
+        header:{
+            'Content-Type': 'application/json'
+            },
+        body: getInputData()
+    })
+    .then(data=>{
+        Z = data
+        alert("Form Submitted");
+    })
+    .catch(err=>console.error(err)); //promise based
