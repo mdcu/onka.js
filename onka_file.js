@@ -61,5 +61,6 @@ function CSVToArray(S){
 		}else{console.log(sign[si])}
 		si++
 	}
+	for(x in res){if(res[x].length==0)res=res.splice(x,1)}
 	return res
 };
