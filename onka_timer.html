@@ -1,0 +1,112 @@
+<html>
+<title>
+</title>
+<head>
+<style>
+#timer {font-size:20vw;text-align:center;}
+header{text-align:center;}
+#order {font-size:1.5em;margin: 0.2em; width:50vw;}
+label, input[type=button], #loop {font-size:1.5em;}
+</style>
+</head>
+<body>
+<header>
+<input id=order  value="m5 b600x2 m2"> <label><input type=checkbox id=loop checked=true>loop</label><br>
+<input type=button value="start" onclick="take_order()">
+</header>
+<p id=timer>00:00</p>
+<p>Sample code <ui>
+<li>m5 b600x1 m2 = count down for 5 minutes, then beep at 600Hz for 1 seconds, and count down for another 2 minutes</li>
+<li>s10 b500x2 = count down for 60 seconds then beep at 500Hx for 2 seconds</li>
+<li>s5 b600x1 s1 b500x2 s5 = count down for 5 seconds then beep at 600Hz for 1 second, during the beep also count down for 1 second (try remove s1 to see effect) follow with beep at 500Hz for 2 seconds, wait for another 5 secons</li>
+<li>Enjoy playing!</li>
+</ui></p>
+<p>This simple timer was created with pure HTML and JS. For any support contact mdcu.firebase@chula.md</p>
+<script>
+let worker = undefined
+//let aim = 15
+let current = 0
+let order = []
+let oi=0
+
+function take_order(){
+	order = document.getElementById("order").value.split(" ")	
+	oi = 0
+	send_order(oi)
+}
+
+function send_order(x){
+	console.log(x)
+	if(x >= order.length){
+		if(document.getElementById("loop").checked){oi=0;x=0;}else{return;}
+	}
+	let text = order[x].toLowerCase()
+	console.log(text)
+	if(text[0]=="s"){
+		console.log("seconds")
+		let aim = +text.substr(1,100)
+		if(!isNaN(aim))go(aim)
+	}else if(text[0]=="m"){
+		console.log("minutes")
+		let aim = +text.substr(1,100)
+		if(!isNaN(aim))go(aim*60)
+	}else if(text[0]=="b"){
+		console.log("beep")
+		let beeper = text.substr(1,100).split("x")
+		console.log(beeper)
+		if(!isNaN(+beeper[0])&&!isNaN(+beeper[1])){
+			beep(+beeper[0],+beeper[1])
+		}
+		send_order(++oi)
+	}
+}
+
+function go(aim){
+	if(worker) clearInterval(worker)
+	//aim = +document.getElementById("aim").value
+	reset(aim)
+	current = aim
+	worker = setInterval(decrement,1000)
+}
+function reset(secs){
+	let time = sec2time(secs)
+	setTimer(time2text(time))
+}
+function sec2time(secs){
+	return [Math.floor(secs/60),secs%60]
+}
+function time2text(time){
+	console.log(time)
+	return (time[0]<10?("0"+time[0]):(time[0]))+":"+(time[1]<10?("0"+time[1]):(time[1]))
+}
+function setTimer(timetext){
+	document.getElementById("timer").innerText = timetext
+}
+function decrement(){
+	setTimer(time2text(sec2time(--current)))
+	if(current == 0){
+		//current = aim+1
+		//if(document.getElementById("beep").checked)beep(600,0.75)
+		//if(!document.getElementById("loop").checked)clearInterval(worker)
+		clearInterval(worker)
+		send_order(++oi)
+	}
+}
+
+function beep(freq,dura){
+	console.log(freq,dura)
+	window.AudioContext = window.AudioContext || window.webkitAudioContext;
+	var ctx = new AudioContext();
+	var o = ctx.createOscillator();
+	o.frequency.value = freq;
+	g = ctx.createGain();
+	g.gain.value = 1;
+	o.connect(ctx.destination);
+	o.start(0);
+	o.stop(dura)
+}
+
+
+</script>
+</body>
+</html>
