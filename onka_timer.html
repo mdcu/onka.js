@@ -28,13 +28,13 @@ label, input[type=button], #loop {font-size:1.5em;}
 // Fix iOS Audio Context by Blake Kus https://gist.github.com/kus/3f01d60569eeadefe3a1
 			// MIT license
 			(function() {
-				window.AudioContext = window.AudioContext || window.webkitAudioContext;
-				if (window.AudioContext) {
-					window.audioContext = new window.AudioContext();
-				}
 				var fixAudioContext = function (e) {
+					window.AudioContext = window.AudioContext || window.webkitAudioContext;
+					if (window.AudioContext) {
+						window.audioContext = new window.AudioContext();
+					}
 					if (window.audioContext) {
-						var source = window.audioContext.createBufferSource();
+						var source = window.audioContext.createOscillator();
 						source.connect(window.audioContext.destination);
 						source.frequency.value = 500;
 						// Play sound
