@@ -96,14 +96,18 @@ function decrement(){
 function beep(freq,dura){
 	console.log(freq,dura)
 	window.AudioContext = window.AudioContext || window.webkitAudioContext;
+	if(!window.AudioContext){
+		alert("This browser does not support Beeping!")
+		return;
+	}
 	var ctx = new AudioContext();
 	var o = ctx.createOscillator();
 	o.frequency.value = freq;
 	g = ctx.createGain();
 	g.gain.value = 1;
 	o.connect(ctx.destination);
-	o.start(0);
-	o.stop(dura)
+	o.start? o.start(0):o.play(0);
+	o.stop? o.stop(dura):o.pause(dura);
 }
 
 
