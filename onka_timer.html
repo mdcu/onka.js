@@ -22,7 +22,7 @@ label, input[type=button], #loop {font-size:1.5em;}
 <li>Enjoy playing!</li>
 </ui></p>
 <p>This simple timer was created with pure HTML and JS. For any support contact mdcu.firebase@chula.md</p>
-	<p>v 003 </p>
+	<p>v 004 </p>
 <script>
 /*	*/
 // Fix iOS Audio Context by Blake Kus https://gist.github.com/kus/3f01d60569eeadefe3a1
@@ -34,19 +34,16 @@ label, input[type=button], #loop {font-size:1.5em;}
 				}
 				var fixAudioContext = function (e) {
 					if (window.audioContext) {
-						// Create empty buffer
-						var buffer = window.audioContext.createBuffer(1, 1, 22050);
 						var source = window.audioContext.createBufferSource();
-						source.buffer = buffer;
-						// Connect to output (speakers)
 						source.connect(window.audioContext.destination);
+						source.frequency.value = 500;
 						// Play sound
 						if (source.start) {
-							source.start(0);
+							source.start(0);source.stop(1);
 						} else if (source.play) {
-							source.play(0);
+							source.play(0);source.pause(1);
 						} else if (source.noteOn) {
-							source.noteOn(0);
+							source.noteOn(0);source.noteOff(1);
 						}
 					}
 					// Remove events
