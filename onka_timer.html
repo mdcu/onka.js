@@ -3,7 +3,7 @@
 </title>
 <head>
 <style>
-body {background-color:#EEEEEE}
+body {background-color:#EEEEEE;font-family:arial;}
 #timer {font-size:20vw;text-align:center;margin-top:10vh;margin-bottom:20vh;}
 header{text-align:center;}
 #order {font-size:1.5em;margin: 0.2em; width:50vw;}
@@ -144,11 +144,11 @@ function beep(freq,dura){
 		return;
 	}
 	//alert(new window.AudioContext().createOscillator().start);alert(new window.AudioContext().createOscillator().stop);
-	//var o = ctx.createOscillator();
+	source = ctx.createOscillator();
 	source.frequency.value = freq;
 	g = ctx.createGain();
 	g.gain.value = 1;
-	//o.connect(ctx.destination);
+	source.connect(ctx.destination);
 	source.start? source.start(0):source.play(0);
 	source.stop? source.stop(dura):source.pause(dura);
 }
