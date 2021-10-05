@@ -149,8 +149,8 @@ function beep(freq,dura){
 	g.gain.value = 1;
 	source.connect(ctx.destination);
 	source.frequency.value = freq;
-	source.start? source.start(0):source.play(0);
-	source.stop? source.stop(dura):source.pause(dura);
+	source.start? source.start(ctx.currentTime):source.play(ctx.currentTime);
+	source.stop? source.stop(ctx.currentTime+dura):source.pause(ctx.currentTime+dura);
 }
 
 </script>
