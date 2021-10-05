@@ -23,7 +23,7 @@ label, input[type=button], #loop {font-size:1.5em;}
 <li>Enjoy playing!</li>
 </ui></p>
 <p>This simple timer was created with pure HTML and JS. For any support contact mdcu.firebase@chula.md</p>
-	<p>v 006 </p>
+	<p>v 007 </p>
 <script>
 
 let worker = undefined
@@ -31,7 +31,7 @@ let worker = undefined
 let current = 0
 let order = []
 let oi=0
-var ctx ;
+var ctx,source ;
 
 /*	*/
 // Fix iOS Audio Context by Blake Kus https://gist.github.com/kus/3f01d60569eeadefe3a1
@@ -43,7 +43,7 @@ var ctx ;
 						ctx = new AudioContext();
 					}
 					if (ctx) {
-						var source = ctx.createOscillator();
+						source = ctx.createOscillator();
 						source.connect(ctx.destination);
 						source.frequency.value = 500;
 						// Play sound
@@ -144,13 +144,13 @@ function beep(freq,dura){
 		return;
 	}
 	//alert(new window.AudioContext().createOscillator().start);alert(new window.AudioContext().createOscillator().stop);
-	var o = ctx.createOscillator();
-	o.frequency.value = freq;
+	//var o = ctx.createOscillator();
+	source.frequency.value = freq;
 	g = ctx.createGain();
 	g.gain.value = 1;
-	o.connect(ctx.destination);
-	o.start? o.start(0):o.play(0);
-	o.stop? o.stop(dura):o.pause(dura);
+	//o.connect(ctx.destination);
+	source.start? source.start(0):source.play(0);
+	source.stop? source.stop(dura):source.pause(dura);
 }
 
 
