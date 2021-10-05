@@ -22,8 +22,16 @@ label, input[type=button], #loop {font-size:1.5em;}
 <li>Enjoy playing!</li>
 </ui></p>
 <p>This simple timer was created with pure HTML and JS. For any support contact mdcu.firebase@chula.md</p>
-	<p>v 005 </p>
+	<p>v 006 </p>
 <script>
+
+let worker = undefined
+//let aim = 15
+let current = 0
+let order = []
+let oi=0
+var ctx ;
+
 /*	*/
 // Fix iOS Audio Context by Blake Kus https://gist.github.com/kus/3f01d60569eeadefe3a1
 			// MIT license
@@ -31,11 +39,11 @@ label, input[type=button], #loop {font-size:1.5em;}
 				var fixAudioContext = function (e) {
 					window.AudioContext = window.AudioContext || window.webkitAudioContext;
 					if (window.AudioContext) {
-						window.audioContext = new window.AudioContext();
+						ctx = new AudioContext();
 					}
-					if (window.audioContext) {
-						var source = window.audioContext.createOscillator();
-						source.connect(window.audioContext.destination);
+					if (ctx) {
+						var source = ctx.createOscillator();
+						source.connect(ctx.destination);
 						source.frequency.value = 500;
 						// Play sound
 						if (source.start) {
@@ -50,20 +58,18 @@ label, input[type=button], #loop {font-size:1.5em;}
 					// Remove events
 					document.removeEventListener('touchstart', fixAudioContext);
 					document.removeEventListener('touchend', fixAudioContext);
+					document.removeEventListener('click', fixAudioContext);
 				};
 				// iOS 6-8
 				document.addEventListener('touchstart', fixAudioContext);
 				// iOS 9
 				document.addEventListener('touchend', fixAudioContext);
+				//else
+				document.addEventListener('click',fixAudioContext);
 			})();
 	
 	
 /* 	*/	
-let worker = undefined
-//let aim = 15
-let current = 0
-let order = []
-let oi=0
 
 function take_order(){
 	order = document.getElementById("order").value.split(" ")	
@@ -137,7 +143,6 @@ function beep(freq,dura){
 		return;
 	}
 	//alert(new window.AudioContext().createOscillator().start);alert(new window.AudioContext().createOscillator().stop);
-	var ctx = new AudioContext();
 	var o = ctx.createOscillator();
 	o.frequency.value = freq;
 	g = ctx.createGain();
