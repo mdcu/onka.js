@@ -45,6 +45,7 @@ label, input[type=button], #loop {font-size:1.5em;}
 						} else if (source.noteOn) {
 							source.noteOn(0);source.noteOff(1);
 						}
+						alert('done')
 					}
 					// Remove events
 					document.removeEventListener('touchstart', fixAudioContext);
