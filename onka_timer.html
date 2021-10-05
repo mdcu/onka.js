@@ -22,6 +22,7 @@ label, input[type=button], #loop {font-size:1.5em;}
 <li>Enjoy playing!</li>
 </ui></p>
 <p>This simple timer was created with pure HTML and JS. For any support contact mdcu.firebase@chula.md</p>
+	<p>v 002 </p>
 <script>
 let worker = undefined
 //let aim = 15
@@ -100,6 +101,7 @@ function beep(freq,dura){
 		alert("This browser does not support Beeping!")
 		return;
 	}
+	alert(new window.AudioContext().createOscillator().start);alert(new window.AudioContext().createOscillator().stop);
 	var ctx = new AudioContext();
 	var o = ctx.createOscillator();
 	o.frequency.value = freq;
