@@ -22,8 +22,45 @@ label, input[type=button], #loop {font-size:1.5em;}
 <li>Enjoy playing!</li>
 </ui></p>
 <p>This simple timer was created with pure HTML and JS. For any support contact mdcu.firebase@chula.md</p>
-	<p>v 002 </p>
+	<p>v 003 </p>
 <script>
+/*	*/
+// Fix iOS Audio Context by Blake Kus https://gist.github.com/kus/3f01d60569eeadefe3a1
+			// MIT license
+			(function() {
+				window.AudioContext = window.AudioContext || window.webkitAudioContext;
+				if (window.AudioContext) {
+					window.audioContext = new window.AudioContext();
+				}
+				var fixAudioContext = function (e) {
+					if (window.audioContext) {
+						// Create empty buffer
+						var buffer = window.audioContext.createBuffer(1, 1, 22050);
+						var source = window.audioContext.createBufferSource();
+						source.buffer = buffer;
+						// Connect to output (speakers)
+						source.connect(window.audioContext.destination);
+						// Play sound
+						if (source.start) {
+							source.start(0);
+						} else if (source.play) {
+							source.play(0);
+						} else if (source.noteOn) {
+							source.noteOn(0);
+						}
+					}
+					// Remove events
+					document.removeEventListener('touchstart', fixAudioContext);
+					document.removeEventListener('touchend', fixAudioContext);
+				};
+				// iOS 6-8
+				document.addEventListener('touchstart', fixAudioContext);
+				// iOS 9
+				document.addEventListener('touchend', fixAudioContext);
+			})();
+	
+	
+/* 	*/	
 let worker = undefined
 //let aim = 15
 let current = 0
@@ -101,7 +138,7 @@ function beep(freq,dura){
 		alert("This browser does not support Beeping!")
 		return;
 	}
-	alert(new window.AudioContext().createOscillator().start);alert(new window.AudioContext().createOscillator().stop);
+	//alert(new window.AudioContext().createOscillator().start);alert(new window.AudioContext().createOscillator().stop);
 	var ctx = new AudioContext();
 	var o = ctx.createOscillator();
 	o.frequency.value = freq;
