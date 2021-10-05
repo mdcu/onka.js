@@ -145,10 +145,10 @@ function beep(freq,dura){
 	}
 	//alert(new window.AudioContext().createOscillator().start);alert(new window.AudioContext().createOscillator().stop);
 	source = ctx.createOscillator();
-	source.frequency.value = freq;
 	g = ctx.createGain();
 	g.gain.value = 1;
 	source.connect(ctx.destination);
+	source.frequency.value = freq;
 	source.start? source.start(0):source.play(0);
 	source.stop? source.stop(dura):source.pause(dura);
 }
