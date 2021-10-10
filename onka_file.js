@@ -39,6 +39,7 @@ function CSVToArray(S){
 	let res = [[]]
 	let sign = []
 	S = S.replace(/\n\r/g,"\n").replace(/\r\n/g,"\n")
+	if(!["\n","\r"].includes(S[S.length-1]))S = S+"\n"
 	let p = /\"|\n|\r|,/g
 	while((m = p.exec(S))!=null){
 		sign.push(m.index)
