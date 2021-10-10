@@ -38,6 +38,7 @@ export_promise = async function(P){my_clipboard = (await P)}
 function CSVToArray(S){
 	let res = [[]]
 	let sign = []
+	S = S.replace(/\n\r/g,"\n").replace(/\r\n/g,"\n")
 	let p = /\"|\n|\r|,/g
 	while((m = p.exec(S))!=null){
 		sign.push(m.index)
