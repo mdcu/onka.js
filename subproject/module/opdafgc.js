@@ -323,7 +323,8 @@ function submission(b){
     dataToPost.append("entry.925314099",fb.get("item30"))//PE-OTHER-OBSERVE
     dataToPost.append("entry.2134581669",fb.get("item31"))//PE-OTHER-PRACTICE
     dataToPost.append("entry.972948946",fb.get("item32"))//PE-COMMENT
-
+    dataToPost.append("fvv",1)
+    dataToPost.append("hud",true)
     /**/
     console.log(fb)
     console.log(dataToPost)
