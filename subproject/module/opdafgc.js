@@ -283,10 +283,15 @@ function submission(b){
     console.log(b)
     b = b.parentElement
     let fb = new FormData(b)
+    if(fb.get("item0")==null||fb.get("item1")==null||fb.get("item2")==null||fb.get("item3")==null||
+    fb.get("item4")==null||fb.get("item5")==null||fb.get("item6")==null||fb.get("item7")==null||fb.get("item8")==null){
+      alert("Performance evaluation is incompleted!")
+      return false;
+    }
     let dataToPost = new FormData();
     dataToPost.append("entry.816105758",b.dataset.secret)//"SECRET CODE"
     dataToPost.append("entry.964924526",b.dataset.staff)//"อาจารย์ผู้ประเมิน"
-    dataToPost.append("entry.1366050700",b.dataset.studentname)//"ชื่อนิสิต"
+    dataToPost.append("entry.1366050700",b.dataset.studentmail)//"ชื่อนิสิต"
     dataToPost.append("entry.2017593494",b.dataset.studentmail)//"email นิสิต"
     dataToPost.append("entry.1624177543",b.dataset.hn)//"HN"
     dataToPost.append("entry.569112786",b.dataset.diagnosis)//"Problem / CC / Diagnosis"
@@ -297,29 +302,29 @@ function submission(b){
     dataToPost.append("entry.1462036256",fb.get("item4"))//"Patient management"
     dataToPost.append("entry.909612859",fb.get("item5"))//"Patient education"
     dataToPost.append("entry.48361767",fb.get("item6"))//"Medical record"
-    dataToPost.append("entry.436195700",fb.get("item7"))//"Professionalism"
+    dataToPost.append("entry.436195700",(fb.get("item7")=="ขาดประเด็นใดประเด็นหนึ่ง")?"":fb.get("item7"))//"Professionalism"
     dataToPost.append("entry.452459076",fb.get("item8"))//"Overall performance"
     dataToPost.append("entry.1758848871",fb.get("item9"))//"Comment to staff team"
     dataToPost.append("entry.1719138925",fb.get("item10"))//"Feedback to student"
-    dataToPost.append("entry.2046221280",fb.get("item11"))//Blood pressure measurement
-    dataToPost.append("entry.59244866",fb.get("item12"))//Orthostatic BP measurement
-    dataToPost.append("entry.1571602702",fb.get("item13"))//BP 4 extremities measurement
-    dataToPost.append("entry.1933191801",fb.get("item14"))//PAD (peripheral pulses/carotid bruit)
-    dataToPost.append("entry.74680792",fb.get("item15"))//Heart murmur
-    dataToPost.append("entry.1494387907",fb.get("item16"))//Thyroid gland exam
-    dataToPost.append("entry.1271975454",fb.get("item17"))//DM foot
-    dataToPost.append("entry.1932016578",fb.get("item18"))//Waist circumference
-    dataToPost.append("entry.1221357209",fb.get("item19"))//Liver examination
-    dataToPost.append("entry.1464278324",fb.get("item20"))//Spleen examination
-    dataToPost.append("entry.1658722845",fb.get("item21"))//Chronic liver stigmata
-    dataToPost.append("entry.1091217323",fb.get("item22"))//Abdominal mass
-    dataToPost.append("entry.1410454874",fb.get("item23"))//Ascites
-    dataToPost.append("entry.1671319664",fb.get("item24"))//Cranial nerve II-VII, XII
-    dataToPost.append("entry.757346235",fb.get("item25"))//Motor, sensory, DTR
-    dataToPost.append("entry.352503479",fb.get("item26"))//Cerebellar sign
-    dataToPost.append("entry.1356559717",fb.get("item27"))//Abnormal breath sound
-    dataToPost.append("entry.1418617715",fb.get("item28"))//Rheumatological examination
-    dataToPost.append("entry.1108949900",fb.get("item29"))//Lymph nodes examination
+    if(fb.get("item11")!=null)dataToPost.append("entry.2046221280",fb.get("item11"))//Blood pressure measurement
+    if(fb.get("item12")!=null)dataToPost.append("entry.59244866",fb.get("item12"))//Orthostatic BP measurement
+    if(fb.get("item13")!=null)dataToPost.append("entry.1571602702",fb.get("item13"))//BP 4 extremities measurement
+    if(fb.get("item14")!=null)dataToPost.append("entry.1933191801",fb.get("item14"))//PAD (peripheral pulses/carotid bruit)
+    if(fb.get("item15")!=null)dataToPost.append("entry.74680792",fb.get("item15"))//Heart murmur
+    if(fb.get("item16")!=null)dataToPost.append("entry.1494387907",fb.get("item16"))//Thyroid gland exam
+    if(fb.get("item17")!=null)dataToPost.append("entry.1271975454",fb.get("item17"))//DM foot
+    if(fb.get("item18")!=null)dataToPost.append("entry.1932016578",fb.get("item18"))//Waist circumference
+    if(fb.get("item19")!=null)dataToPost.append("entry.1221357209",fb.get("item19"))//Liver examination
+    if(fb.get("item20")!=null)dataToPost.append("entry.1464278324",fb.get("item20"))//Spleen examination
+    if(fb.get("item21")!=null)dataToPost.append("entry.1658722845",fb.get("item21"))//Chronic liver stigmata
+    if(fb.get("item22")!=null)dataToPost.append("entry.1091217323",fb.get("item22"))//Abdominal mass
+    if(fb.get("item23")!=null)dataToPost.append("entry.1410454874",fb.get("item23"))//Ascites
+    if(fb.get("item24")!=null)dataToPost.append("entry.1671319664",fb.get("item24"))//Cranial nerve II-VII, XII
+    if(fb.get("item25")!=null)dataToPost.append("entry.757346235",fb.get("item25"))//Motor, sensory, DTR
+    if(fb.get("item26")!=null)dataToPost.append("entry.352503479",fb.get("item26"))//Cerebellar sign
+    if(fb.get("item27")!=null)dataToPost.append("entry.1356559717",fb.get("item27"))//Abnormal breath sound
+    if(fb.get("item28")!=null)dataToPost.append("entry.1418617715",fb.get("item28"))//Rheumatological examination
+    if(fb.get("item29")!=null)dataToPost.append("entry.1108949900",fb.get("item29"))//Lymph nodes examination
     dataToPost.append("entry.925314099",fb.get("item30"))//PE-OTHER-OBSERVE
     dataToPost.append("entry.2134581669",fb.get("item31"))//PE-OTHER-PRACTICE
     dataToPost.append("entry.972948946",fb.get("item32"))//PE-COMMENT
@@ -335,6 +340,7 @@ function submission(b){
       body: dataToPost
     }).then(response=>{
       console.log(response);
+      b.innerHTML = "Cleared"
     }).catch(err=>alert(err));
 
 }
