@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="viewport" content="user-scalable=no, width=device-width"/>
+    <meta name="apple-mobile-web-app-title" content="OPD-digital-form"/>
+    <title>ONKA MODULE</title>
+    <link rel="icon" href="https://mdcu.github.io/onka.js/asset/onka.png" type="image/x-icon"/>
+    <link rel="stylesheet" href="https://mdcu.github.io/onka.js/onka_base.css"/>
+    <!--<link rel="stylesheet" href="onka_underproduction.css"/> <!-- comment out this line once design process is done-->
+    <script src="https://mdcu.github.io/onka.js/onka.js"></script>
+    <script src="https://mdcu.github.io/onka.js/onka_array.js"></script>
+    <script src="https://mdcu.github.io/onka.js/onka_file.js"></script>
+
+
+  </head>
+  <body>
+    <script>
+        let params = new URLSearchParams(window.location.search)
+        function requireXhr(file, callback) {
+            const xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function () {   
+                // readyState:
+                // 0 UNSENT Client has been created. open() not called yet.
+                // 1 OPENED open() has been called.
+                // 2 HEADERS_RECEIVED send() has been called, and headers and status are available.
+                // 3 LOADING Downloading; responseText holds partial data.
+                // 4 DONE The operation is complete.
+                // when not done, return
+                if (xhr.readyState !== 4)return;
+                // done, check status code
+                if (xhr.status !== 200)return;
+                // now the file is loaded,
+                // go and execute the script
+                eval(xhr.responseText);
+                // notify caller
+                if (callback)callback();
+            };
+            // open connection to file
+            xhr.open("GET", file, true);
+            // send the request
+            xhr.send();
+        }
+        requireXhr(params.get("mode"))
+    </script>
+  </body>
+</html>
