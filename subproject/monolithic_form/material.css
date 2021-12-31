@@ -1,0 +1,73 @@
+body {text-align: center; box-sizing: border-box; margin:0; padding:0;}
+
+
+
+.sectiondiv {
+  background-color: silver;
+  font-size: 1.5em;
+  font-weight: 800;
+  margin-top: 0.5em;
+}
+
+.itemdiv{
+  border-top: 1px silver solid;padding-top: 0.5em;padding-bottom: 0.5em;
+}
+
+.leftdiv{display:table-cell;width:49vw;}
+.leftdiv h1 {font-size: 1.2em; font-weight: 600;}
+.leftdiv select{
+  -webkit-appearance: none;
+  font-size: 1.5em;
+  text-align: center;
+  padding:0.5em;
+  border-radius: 0.25em;
+}
+
+.rightdiv{display:table-cell;width:49vw;}
+.rightdiv textarea{resize:vertical;width:100%;border-left:0;border-right:0;}
+.keydiv {text-align: left}
+.newkeydiv input {width:100%;border:0;background-color:#DDD}
+.keypoint {
+  background-color: lightgrey;
+  border-radius: 1em;
+  padding: 0.2em;
+  display: inline-block;
+  margin: 0em 0.5em 0.5em 0em;
+}
+.keycode {padding-left:0.5em;padding-right:0.5em;border-radius: 2em;margin-right:0.2em; border:1px solid black;}
+.style0 .keycode {background-color: white}
+.style1 .keycode {background-color: lime}
+.style2 .keycode {background-color: tomato}
+.style3 .keycode {background-color: gold}
+.keydelete {color:red;font-weight: 800;margin-left: 0.2em;}
+
+#summarydiv {padding-left: 1rem;text-align: left;}
+#summarydiv h1 {padding-left: 1rem;}
+#summarydiv h2 {padding-left: 3rem;}
+#summarydiv h3 {padding-left: 4rem;}
+#summarydiv ul, #summarydiv p {padding-left: 5rem;}
+#summarydiv .style0 {color:grey;}
+#summarydiv .style1 {color:green;}
+#summarydiv .style2 {color:red;}
+#summarydiv .style3 {color:gold;}
+
+.A {background-color: limegreen;}
+.B\+ {background-color: lime;}
+.B {background-color: yellow;}
+.C\+ {background-color: gold;}
+.C {background-color: orange;}
+.D {background-color: orangered;}
+.E {background-color: red;}
+.NA {background-color: grey;}
+
+@media print{
+  body {font-size:8px;}
+  #maindiv {padding-top:0.1em;padding-bottom:0,1em;}
+  .leftdiv *, .rightdiv * {vertical-align: top;}
+  .leftdiv h1 {display:flex;float: left;}
+  .leftdiv select {font-size:1.5em; margin:0.1em;display: flex;float: right;}
+  .keydelete {display:none}
+  .newkeydiv {display: none;}
+
+
+}
