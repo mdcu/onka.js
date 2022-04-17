@@ -1,0 +1,30 @@
+* {
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+
+
+div.branch {
+  display:flex;
+  align-items:baseline;
+border-left:1px solid black;
+}
+
+div.parent, div.child {
+  display:inline-block;
+  height:100%;
+}
+
+div.parent {
+padding:0.5em 0.5em 0em 1em;
+border-bottom:1px dotted black;
+}
+
+div.parent.hasChildren {border:1px dotted black;}
+
+textarea{
+ width:100%;
+ height:10em;
+}
